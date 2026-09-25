@@ -1,5 +1,6 @@
 import { PROVIDERS, DEFAULT_SETTINGS, SCENES } from './config.js';
 import { load, save } from './storage.js';
+import { renderSnake } from './snake-render.js';
 import { buildMemory, respondToImpulse, suggestRules } from './ai.js';
 import { chatJSON } from './llm.js';
 
@@ -23,6 +24,7 @@ function show(name, { push = true } = {}) {
   document.querySelectorAll('[data-screen]').forEach((el) => { el.hidden = el.dataset.screen !== name; });
   if (push && state.history.at(-1) !== name) state.history.push(name);
   if (name === 'home') state.history = ['home'];
+  $('.topbar').hidden = name === 'home';
   $('[data-action="back"]').hidden = name === 'home';
   RENDER[name]?.();
   window.scrollTo(0, 0);
@@ -56,39 +58,26 @@ const OUTCOME = {
   ate: { label: '吃了', cls: 'pill-ate' },
 };
 
+const pad = (value) => String(value).padStart(2, '0');
+const dayKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+// duration 单位是分钟，不足一小时时带上“分”，避免 0:45 被读成 45 秒
+function fmtDuration(minutes) {
+  if (minutes < 60) return `${minutes} 分`;
+  return `${Math.floor(minutes / 60)}:${pad(minutes % 60)}`;
+}
+
 function renderHome() {
-  $('#demo-badge').hidden = !!state.settings.apiKey;
-  const { goal, rules } = state.profile;
-  $('#promise').innerHTML = goal || rules.length
-    ? `<div class="promise-label">我的承诺</div>
-       <div class="promise-goal">${esc(goal || '还没写目标')}</div>
-       <ul class="promise-rules">${rules.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
-       <button class="link-btn" data-go="setup" style="margin-top:10px">修改</button>`
-    : `<div class="promise-empty">
-         <p>先写下你为什么想变瘦。想多吃的时候，BioBite 会用你自己的话提醒你。</p>
-         <button class="link-btn" data-go="setup">设定我的硬边界 →</button>
-       </div>`;
-
-  const weekAgo = Date.now() - 7 * 864e5;
-  const week = state.logs.filter((l) => l.ts > weekAgo);
-  const count = (o) => week.filter((l) => l.outcome === o).length;
-  $('#stats').innerHTML = ['skipped', 'alternative', 'ate']
-    .map((o) => `<div class="stat"><div class="stat-num">${count(o)}</div><div class="stat-label">本周${OUTCOME[o].label}</div></div>`)
-    .join('');
-
-  $('#log-list').innerHTML = state.logs.length
-    ? state.logs.slice(0, 10).map((l) => {
-        const o = OUTCOME[l.outcome];
-        const when = new Date(l.ts).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        return `<li class="log-item">
-          <div class="log-main">
-            <div class="log-text">${esc(l.text)}</div>
-            <div class="log-meta">${when} · 借口：${esc(l.ai?.excuse_type || '—')}</div>
-          </div>
-          ${o ? `<span class="pill ${o.cls}">${o.label}</span>` : ''}
-        </li>`;
-      }).join('')
-    : '<li class="empty">还没有记录。下次想多吃一口时，先来这里。</li>';
+  const now = new Date();
+  const todayKey = dayKey(now);
+  const todayLogs = state.logs.filter((log) => dayKey(new Date(log.ts)) === todayKey);
+  const calories = todayLogs.reduce((sum, log) => sum + (Number(log.ai?.calories) || 0), 0);
+  const duration = todayLogs.reduce((sum, log) => sum + (Number(log.ai?.duration) || 0), 0);
+  $('#home-date').textContent = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}`;
+  $('#home-calories').textContent = `${calories} kcal`;
+  $('#home-duration').textContent = fmtDuration(duration);
+  $('#home-caption').textContent = todayLogs.length ? `今天已经把 ${todayLogs.length} 件想吃的交给我了` : '';
+  renderSnake($('#snake-belly'), todayLogs.length);
 }
 
 // ---------- 冲动输入 ----------

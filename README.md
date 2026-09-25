@@ -111,7 +111,9 @@ BioBite/
 ├── PRD.md                    # 产品需求文档
 ├── STYLE_GUIDE.md            # 设计系统
 ├── DEVELOPMENT.md            # 5 天开发计划
-├── DAILY_SUMMARY_0925.md     # 9月25日完成总结
+│
+├── daily-summaries/           # 每日完成总结（9月25日～29日，逐日更新）
+│   └── DAILY_SUMMARY_0925.md # 9月25日完成总结
 │
 ├── css/
 │   └── app.css               # 样式表（色彩、字体、组件）
@@ -125,7 +127,7 @@ BioBite/
 │   └── storage.js            # 本地存储工具
 │
 └── devlog/
-    └── v0.1/                 # 之前版本的截图和代码备份
+    └── v1/                   # V1 版本的截图和代码备份
 ```
 
 ---
@@ -206,7 +208,7 @@ localStorage.clear();
 
 **初始提交（2026-09-25）：**
 ```
-feat: BioBite v0.2 初始化 - PRD、设计系统、AI 链路完整打通
+feat: BioBite v2 初始化 - PRD、设计系统、AI 链路完整打通
 
 ✅ PRD 完整定版
 ✅ 设计风格指南（色彩、字体、交互、无障碍）
@@ -222,6 +224,6 @@ feat: BioBite v0.2 初始化 - PRD、设计系统、AI 链路完整打通
 
 - 代码问题：检查 `js/ai.js` 中的 Prompt 和返回格式
 - 设计问题：参考 `STYLE_GUIDE.md`
-- 产品问题：查看 `PRD.md` 的第 15 章"V0.2 需要共同确认的关键决策"
+- 产品问题：查看 `PRD.md` 的第 15 章"V2 需要共同确认的关键决策"
 
 祝开发顺利！🚀

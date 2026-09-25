@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#F5F1E8" />
+  <meta name="theme-color" content="#FFFFFF" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>BioBite</title>
   <link rel="stylesheet" href="css/app.css" />
@@ -21,17 +21,42 @@
     </header>
 
     <!-- 首页 -->
-    <main class="screen" data-screen="home">
-      <section class="card promise" id="promise"></section>
-      <button class="big-btn" data-go="impulse">
-        <span class="big-btn-title">我想吃点什么</span>
-        <span class="big-btn-sub">先说给 BioBite 听，再决定</span>
-      </button>
-      <section class="stats" id="stats"></section>
-      <section>
-        <h2 class="section-title">最近的记录</h2>
-        <ul class="log-list" id="log-list"></ul>
+    <main class="screen home-screen" data-screen="home">
+      <section class="home-heading" aria-label="今天">
+        <div>
+          <p class="home-brand">BoaBite</p>
+          <p class="home-date" id="home-date"></p>
+        </div>
+        <div class="home-tools">
+          <button class="round-tool" data-go="done" aria-label="翻看记录">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.4C10.6 5.2 8.8 4.8 6.6 5.1c-.6.1-1 .6-1 1.2v10c0 .7.6 1.2 1.3 1.1 1.9-.2 3.6.2 5.1 1.3"/><path d="M12 6.4c1.4-1.2 3.2-1.6 5.4-1.3.6.1 1 .6 1 1.2v10c0 .7-.6 1.2-1.3 1.1-1.9-.2-3.6.2-5.1 1.3"/><path d="M12 6.4v12.3"/></svg>
+          </button>
+          <button class="round-tool" data-go="setup" aria-label="蛇设定">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7.6c3.6-2.6 9.8-.2 9.3 3.9-.4 3.6-4.7 3.6-6.2 1.5-1.5-2 .5-4.1 2.6-3.1 2 1 1 4.1-1.1 6.2-1.5 1.5-3.6 2-5.6 2"/><circle cx="13.2" cy="9.6" r=".95" fill="currentColor" stroke="none"/></svg>
+          </button>
+        </div>
       </section>
+
+      <section class="snake-scene" aria-label="BoaBite 的蛇">
+        <!-- 蛇头、隆起和尾是同一条连续轮廓，由 snake-render.js 按投喂数量生成 -->
+        <svg class="snake-body" viewBox="0 0 320 104" aria-hidden="true">
+          <path id="snake-belly" vector-effect="non-scaling-stroke" d="" />
+          <!-- 点眼在右端小圆头内，位置随轮廓固定 -->
+          <circle class="snake-eye" cx="301" cy="90.5" r="1.9" />
+        </svg>
+      </section>
+
+      <section class="home-metrics" aria-label="今日摘要">
+        <div class="metric"><span>耗时</span><strong id="home-duration">0:00</strong></div>
+        <div class="metric metric-right"><span>热量</span><strong id="home-calories">0 kcal</strong></div>
+      </section>
+
+      <p class="home-caption" id="home-caption"></p>
+      <nav class="home-nav" aria-label="主导航">
+        <button data-go="home" class="home-nav-link is-active">吃</button>
+        <button data-go="impulse" class="home-add" aria-label="投喂：拍下想吃的食物">＋</button>
+        <button data-go="done" class="home-nav-link">看</button>
+      </nav>
     </main>
 
     <!-- 冲动输入 -->

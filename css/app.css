@@ -1,16 +1,35 @@
 :root {
-  --bg: #F5F1E8;
-  --surface: #FFFDF8;
-  --ink: #1F2A24;
-  --ink-2: #5B645E;
-  --ink-3: #9AA19C;
-  --line: #E6E0D2;
-  --accent: #2F5D46;
-  --accent-soft: #E3EDE5;
-  --warm: #C8643B;
-  --warm-soft: #F7E6DB;
+  /* BoaBite V2 品牌令牌（BOABITE_DESIGN.md §3） */
+  --boa-white: #FFFFFF;
+  --boa-paper: #FCFCFA;
+  --boa-ink: #080808;
+  --boa-ink-soft: #5F5F5F;
+  --boa-line: #111111;
+  --boa-green: #173D2A;
+  --boa-green-bright: #B8E85A;
+  --boa-muted: #EEEEEA;
+  --boa-danger: #D94C3D;
+
+  /* 字体（§4.1）。网络字体授权未确认，一律带系统回退。 */
+  --font-display-cn: "ZCOOL KuaiLe", "LXGW WenKai", "Kaiti SC", "STKaiti", cursive;
+  --font-display-en: "Kalam", "Patrick Hand", "Caveat", cursive;
+  --font-body-cn: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+  --font-ui: "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-logo: -apple-system, "Avenir Next", "Helvetica Neue", "PingFang SC", sans-serif;
+
+  /* 通用别名，映射到品牌令牌，旧屏幕沿用这一层 */
+  --bg: var(--boa-white);
+  --surface: var(--boa-white);
+  --ink: var(--boa-ink);
+  --ink-2: var(--boa-ink-soft);
+  --ink-3: #9A9A96;
+  --line: #E4E4DF;
+  --accent: var(--boa-green);
+  --accent-soft: var(--boa-muted);
+  --warm: var(--boa-danger);
+  --warm-soft: #FBEAE7;
   --radius: 18px;
-  --shadow: 0 1px 2px rgba(31, 42, 36, 0.04), 0 6px 20px rgba(31, 42, 36, 0.06);
+  --shadow: 0 1px 2px rgba(8, 8, 8, 0.04), 0 6px 20px rgba(8, 8, 8, 0.05);
   color-scheme: light;
 }
 
@@ -19,9 +38,9 @@
 
 html, body {
   margin: 0;
-  background: var(--bg);
+  background: #000000;
   color: var(--ink);
-  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: var(--font-ui);
   font-size: 16px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -165,6 +184,154 @@ textarea:focus, input:focus, select:focus { outline: none; border-color: var(--a
   max-width: calc(100% - 32px);
 }
 
+
+/* ============================================================
+   BoaBite V2 首页（BOABITE_DESIGN.md §5）
+   白底 + 黑色线稿 + 大留白。比例对齐参考图，不放大任何元素。
+   ============================================================ */
+.home-screen {
+  min-height: calc(100dvh - 24px - env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 8px;
+  background: var(--boa-white);
+  color: var(--boa-ink);
+  animation: none;
+}
+
+/* --- 顶部：品牌 + 日期 / 图书 + 蛇设定（§5.1） --- */
+.home-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 18px 2px 0;
+}
+.home-brand {
+  margin: 0;
+  font-family: var(--font-logo);
+  font-size: 30px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -.026em;
+}
+.home-date {
+  margin: 3px 0 0;
+  font-family: var(--font-logo);
+  font-size: 17px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.home-tools { display: flex; gap: 10px; padding-top: 2px; }
+.round-tool {
+  width: 40px; height: 40px;
+  border: 1.6px solid var(--boa-line);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--boa-ink);
+  transition: transform .12s ease, background .12s ease;
+}
+.round-tool:active { transform: scale(.94); background: var(--boa-muted); }
+.round-tool svg {
+  width: 22px; height: 22px;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* --- 蛇：单一连续轮廓，上方留白与顶部品牌拉开距离（§5.2） --- */
+.snake-scene { position: relative; flex: 1; min-height: 300px; margin-top: 14px; }
+
+/* 蛇：头 + 隆起 + 尾为一条连续轮廓，不再拆成两个对象 */
+.snake-body {
+  position: absolute;
+  left: 4px; right: 4px; bottom: 6%;
+  width: 100%; height: auto;
+  overflow: visible;
+  /* 呼吸幅度极小，只为表示“活着”（§8） */
+  animation: belly-breathe 5s ease-in-out infinite;
+  transform-origin: 50% 92%;
+}
+.snake-body path {
+  fill: var(--boa-white);
+  stroke: var(--boa-line);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* d 的过渡由 JS 写入，浏览器不支持时直接跳变，不影响可用性 */
+  transition: d .8s cubic-bezier(.22, .9, .3, 1);
+}
+.snake-eye { fill: var(--boa-ink); }
+@keyframes belly-breathe {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.018); }
+}
+
+/* --- 今日摘要：手写标签 + 无衬线数值（§4.2、§7） --- */
+.home-metrics {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 6px 6px;
+}
+.metric { display: flex; flex-direction: column; gap: 6px; }
+.metric span {
+  font-family: var(--font-display-cn);
+  font-size: 16px; line-height: 1;
+  font-weight: 400;
+  letter-spacing: .06em;
+  color: var(--boa-ink);
+}
+.metric strong {
+  font-family: var(--font-ui);
+  font-size: 19px; line-height: 1;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+}
+.metric-right { align-items: flex-end; }
+
+/* --- 底部导航：吃 / ＋ / 看（§5.3） --- */
+.home-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+  gap: 18px;
+  padding: 16px 10px calc(14px + env(safe-area-inset-bottom));
+}
+.home-nav-link {
+  padding: 8px 14px;
+  font-family: var(--font-display-cn);
+  font-size: 18px; line-height: 1;
+  color: var(--boa-ink);
+}
+.home-nav-link:not(.is-active) { color: var(--boa-ink-soft); }
+.home-add {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--boa-ink); color: var(--boa-white);
+  font-family: var(--font-ui);
+  font-size: 24px; font-weight: 300; line-height: 1;
+  display: grid; place-items: center;
+  padding-bottom: 2px;
+  transition: transform .12s ease;
+}
+.home-add:active { transform: scale(.93); }
+.home-caption {
+  min-height: 13px;
+  margin: 0 0 2px;
+  color: var(--boa-ink-soft);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-height: 700px) {
+  .snake-scene { min-height: 230px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .screen, .skeleton { animation: none; }
+  .screen, .skeleton, .snake-body { animation: none; }
+  .snake-body path { transition: none; }
 }
