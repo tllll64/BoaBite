@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F5F1E8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>BioBite</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="icon-btn" data-action="back" aria-label="返回" hidden>
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="brand">BioBite<span class="badge" id="demo-badge" hidden>演示模式</span></div>
+      <button class="icon-btn" data-go="settings" aria-label="设置">
+        <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <!-- 首页 -->
+    <main class="screen" data-screen="home">
+      <section class="card promise" id="promise"></section>
+      <button class="big-btn" data-go="impulse">
+        <span class="big-btn-title">我想吃点什么</span>
+        <span class="big-btn-sub">先说给 BioBite 听，再决定</span>
+      </button>
+      <section class="stats" id="stats"></section>
+      <section>
+        <h2 class="section-title">最近的记录</h2>
+        <ul class="log-list" id="log-list"></ul>
+      </section>
+    </main>
+
+    <!-- 冲动输入 -->
+    <main class="screen" data-screen="impulse" hidden>
+      <h1 class="page-title">此刻，你想吃什么？</h1>
+      <p class="page-sub">说说你在哪、想吃什么，以及心里正在说服自己的那句话。</p>
+      <div class="chips" id="scene-chips" role="radiogroup" aria-label="场景"></div>
+      <textarea id="impulse-text" rows="4" maxlength="200" placeholder="比如：同事给了块蛋糕，就吃一口应该没事吧"></textarea>
+      <div class="field-hint"><span id="impulse-count">0</span>/200</div>
+      <button class="primary-btn" id="impulse-submit" disabled>说给 BioBite 听</button>
+    </main>
+
+    <!-- AI 回应 -->
+    <main class="screen" data-screen="response" hidden>
+      <div id="response-body"></div>
+    </main>
+
+    <!-- 结果 -->
+    <main class="screen" data-screen="done" hidden>
+      <div class="done" id="done-body"></div>
+      <button class="primary-btn" data-go="home">回到首页</button>
+    </main>
+
+    <!-- 硬边界规则 -->
+    <main class="screen" data-screen="setup" hidden>
+      <h1 class="page-title">我的硬边界</h1>
+      <p class="page-sub">写下你为什么想变瘦，再给自己定几条具体的规则。BioBite 会一直记住它们。</p>
+      <label class="label" for="goal">我的目标</label>
+      <textarea id="goal" rows="3" maxlength="120" placeholder="比如：年底之前穿上那条收腰的裙子"></textarea>
+      <label class="label" for="context">我最容易多吃的时候</label>
+      <input id="context" maxlength="80" placeholder="比如：加班到很晚、同事分零食" />
+      <button class="ghost-btn" id="rules-ai">AI 帮我变成具体规则</button>
+      <label class="label">我的规则</label>
+      <ul class="rule-list" id="rule-list"></ul>
+      <div class="add-rule">
+        <input id="rule-input" maxlength="40" placeholder="如果……，就……" />
+        <button class="small-btn" id="rule-add">添加</button>
+      </div>
+      <button class="primary-btn" id="setup-save">保存我的承诺</button>
+    </main>
+
+    <!-- 设置 -->
+    <main class="screen" data-screen="settings" hidden>
+      <h1 class="page-title">模型设置</h1>
+      <p class="page-sub">不填 API Key 时使用演示回应。Key 只保存在这台设备上。</p>
+      <label class="label" for="provider">模型服务</label>
+      <select id="provider"></select>
+      <label class="label" for="base-url">接口地址</label>
+      <input id="base-url" inputmode="url" autocomplete="off" />
+      <label class="label" for="model">模型名称</label>
+      <input id="model" autocomplete="off" />
+      <label class="label" for="api-key">API Key</label>
+      <input id="api-key" type="password" autocomplete="off" placeholder="sk-..." />
+      <button class="ghost-btn" id="settings-test">测试连接</button>
+      <p class="field-hint" id="settings-status" role="status"></p>
+      <button class="primary-btn" id="settings-save">保存</button>
+    </main>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
