@@ -26,7 +26,9 @@ export async function chatJSON({ baseURL, model, apiKey }, messages, { timeoutMs
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
-    if (res.status === 401) throw new LLMError('API Key 无效');
+    // 401 也带上服务端原文：Key 无效和 baseURL 指错同样返回 401，
+    // 只说“Key 无效”会把人引向错误的方向。
+    if (res.status === 401) throw new LLMError(`API Key 无效或接口地址不对${detail ? `：${detail.slice(0, 160)}` : ''}`);
     throw new LLMError(`模型服务出错（${res.status}）${detail.slice(0, 120)}`);
   }
 

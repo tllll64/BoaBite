@@ -14,7 +14,7 @@
       <button class="icon-btn" data-action="back" aria-label="返回" hidden>
         <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="brand">BioBite<span class="badge" id="demo-badge" hidden>演示模式</span></div>
+      <div class="brand">BioBite</div>
       <button class="icon-btn" data-go="settings" aria-label="设置">
         <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
@@ -28,7 +28,7 @@
           <p class="home-date" id="home-date"></p>
         </div>
         <div class="home-tools">
-          <button class="round-tool" data-go="done" aria-label="翻看记录">
+          <button class="round-tool" data-home-mode="view" aria-label="翻看记录">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.4C10.6 5.2 8.8 4.8 6.6 5.1c-.6.1-1 .6-1 1.2v10c0 .7.6 1.2 1.3 1.1 1.9-.2 3.6.2 5.1 1.3"/><path d="M12 6.4c1.4-1.2 3.2-1.6 5.4-1.3.6.1 1 .6 1 1.2v10c0 .7-.6 1.2-1.3 1.1-1.9-.2-3.6.2-5.1 1.3"/><path d="M12 6.4v12.3"/></svg>
           </button>
           <button class="round-tool" data-go="setup" aria-label="蛇设定">
@@ -38,11 +38,58 @@
       </section>
 
       <section class="snake-scene" aria-label="BoaBite 的蛇">
+        <!-- 花草点缀：与蛇同一坐标宽度（320），底部对齐，蛇的基线落在 y=248。
+             草叶取面性（圆头粗描边即实心观感），小花取线性 + 实心花心。 -->
+        <svg class="home-flora" viewBox="0 0 320 260" aria-hidden="true">
+          <defs>
+            <!-- 草丛：三片近直立的实心叶，只在叶尖微微外撇，整体是「草」不是箭头 -->
+            <g id="flora-tuft">
+              <path d="M-.6 0C-2.4-3.2-3.6-6.6-4-10.2c-.1-.8.9-1 1.2-.3 1.2 3.2 1.9 6.5 2.1 10 0 .6-.5.8-.9.5Z" />
+              <path d="M0 0C-.5-4-.3-8.2.5-12.4c.2-.8 1.2-.7 1.2.1.2 4.2-.2 8.3-1 12.4-.1.6-.6.5-.7-.1Z" />
+              <path d="M.8 0C1.4-3.4 2.8-6.6 4.8-9.4c.5-.6 1.3-.1 1 .6-1.4 3-2.4 6.1-3 9.3-.1.6-.7.6-.8-.1Z" />
+            </g>
+            <!-- 两片小叶，比草丛更短更轻，用来填零碎空白 -->
+            <g id="flora-blade">
+              <path d="M-.4 0C-1.6-2.2-2.3-4.6-2.6-7.2c-.1-.7.8-.9 1-.2.7 2.3 1.2 4.7 1.4 7.1 0 .5-.5.6-.8.3Z" />
+              <path d="M.5 0C.6-2.6 1.3-5 2.5-7.2c.3-.6 1.2-.3 1 .4-.8 2.2-1.3 4.5-1.5 6.8 0 .5-.6.5-.5 0Z" />
+            </g>
+            <!-- 五瓣小花，原点在花心 -->
+            <g id="flora-flower">
+              <circle class="flora-petal" cx="0" cy="-4.3" r="2.5" />
+              <circle class="flora-petal" cx="4.1" cy="-1.3" r="2.5" />
+              <circle class="flora-petal" cx="2.5" cy="3.5" r="2.5" />
+              <circle class="flora-petal" cx="-2.5" cy="3.5" r="2.5" />
+              <circle class="flora-petal" cx="-4.1" cy="-1.3" r="2.5" />
+              <circle class="flora-heart" cx="0" cy="0" r="1.5" />
+            </g>
+          </defs>
+
+          <!-- 数量克制，位置故意不齐：高低错开、疏密不均、朝向各异 -->
+          <use class="flora-flower" href="#flora-flower" x="88" y="24" />
+          <use class="flora-blade-1" href="#flora-blade" x="281" y="47" transform="rotate(11 281 47)" />
+          <use class="flora-tuft-1" href="#flora-tuft" x="41" y="73" transform="rotate(-9 41 73) scale(1.1)" transform-origin="41 73" />
+          <use class="flora-blade-1" href="#flora-blade" x="307" y="118" transform="rotate(-13 307 118)" />
+
+          <!-- 贴地这几株也不排成一行，y 值各差一截 -->
+          <use class="flora-tuft-1" href="#flora-tuft" x="26" y="239" transform="rotate(-7 26 239)" />
+          <use class="flora-blade-1" href="#flora-blade" x="63" y="251" transform="rotate(6 63 251) scale(.9)" transform-origin="63 251" />
+          <use class="flora-flower" href="#flora-flower" x="164" y="246" />
+          <use class="flora-tuft-1" href="#flora-tuft" x="244" y="243" transform="rotate(8 244 243) scale(1.15)" transform-origin="244 243" />
+          <use class="flora-blade-1" href="#flora-blade" x="299" y="254" transform="rotate(-5 299 254)" />
+        </svg>
+
         <!-- 蛇头、隆起和尾是同一条连续轮廓，由 snake-render.js 按投喂数量生成 -->
-        <svg class="snake-body" viewBox="0 0 320 104" aria-hidden="true">
+        <svg class="snake-body" viewBox="0 0 320 190" aria-hidden="true">
           <path id="snake-belly" vector-effect="non-scaling-stroke" d="" />
-          <!-- 点眼在右端小圆头内，位置随轮廓固定 -->
-          <circle class="snake-eye" cx="301" cy="90.5" r="1.9" />
+          <!-- 食物轮廓层，夹在蛇身和点眼之间（§7.1） -->
+          <g id="snake-foods"></g>
+          <!-- 点眼在右端楔形头内，位置随轮廓固定 -->
+          <circle class="snake-eye" cx="296" cy="167" r="2.1" />
+          <!-- 肚子里的呼唤语，灰色两行，居中在隆起下方 -->
+          <text class="snake-words" x="170" y="126" text-anchor="middle">
+            <tspan x="170">我想</tspan>
+            <tspan x="170" dy="19">吃点东西</tspan>
+          </text>
         </svg>
       </section>
 
@@ -51,57 +98,172 @@
         <div class="metric metric-right"><span>热量</span><strong id="home-calories">0 kcal</strong></div>
       </section>
 
-      <p class="home-caption" id="home-caption"></p>
+      <!-- 「看」模式：留在首页，只替换上半部分的内容 -->
+      <section class="home-records" id="home-records" aria-label="投喂记录" hidden></section>
+
       <nav class="home-nav" aria-label="主导航">
-        <button data-go="home" class="home-nav-link is-active">吃</button>
-        <button data-go="impulse" class="home-add" aria-label="投喂：拍下想吃的食物">＋</button>
-        <button data-go="done" class="home-nav-link">看</button>
+        <button data-home-mode="eat" class="home-nav-link nav-donut is-active" aria-pressed="true" aria-label="吃">
+          <!-- 甜甜圈：环形轮廓 + 糖粒；未选中描边、选中填充（与「看」同一套切换） -->
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path class="nav-donut-ring" vector-effect="non-scaling-stroke" fill-rule="evenodd"
+                  d="M22 5.6c9.05 0 16.4 7.35 16.4 16.4S31.05 38.4 22 38.4 5.6 31.05 5.6 22 12.95 5.6 22 5.6Zm0 9.9a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"/>
+            <g class="nav-donut-sprinkles">
+              <path vector-effect="non-scaling-stroke" d="M16.2 11.9l2.1-2.4"/>
+              <path vector-effect="non-scaling-stroke" d="M29.6 13.4l-1.3 2.9"/>
+              <path vector-effect="non-scaling-stroke" d="M33.2 25.4l-2.9-1"/>
+              <path vector-effect="non-scaling-stroke" d="M12.1 27.9l3.1.5"/>
+              <path vector-effect="non-scaling-stroke" d="M23.4 33.6l.6-3.1"/>
+            </g>
+          </svg>
+        </button>
+        <button data-go="camera" class="home-add" aria-label="投喂：拍下想吃的食物">＋</button>
+        <button data-home-mode="view" class="home-nav-link nav-boa" aria-pressed="false" aria-label="看记录">
+          <!-- 蛇吞象轮廓，取自 snake-render.js 的同一造型；未选中描边、选中填充 -->
+          <svg viewBox="0 0 84 30" aria-hidden="true">
+            <path vector-effect="non-scaling-stroke" d="M4 25.4h9c2.6 0 4-2.6 6-8.4 2.2-6.4 6.4-11.4 12.6-11.4 6.4 0 10.4 5.2 12.4 11.6 1.8 5.7 3.2 8.2 5.8 8.2h20.4c2.8 0 4.6.6 4.6 2s-1.8 2.2-4.6 2.2H4c-2 0-3.2-.9-3.2-2.1S2 25.4 4 25.4Z"/>
+            <circle class="nav-boa-eye" cx="75.5" cy="27.4" r="1.15" />
+          </svg>
+        </button>
       </nav>
     </main>
 
-    <!-- 冲动输入 -->
-    <main class="screen" data-screen="impulse" hidden>
-      <h1 class="page-title">此刻，你想吃什么？</h1>
-      <p class="page-sub">说说你在哪、想吃什么，以及心里正在说服自己的那句话。</p>
-      <div class="chips" id="scene-chips" role="radiogroup" aria-label="场景"></div>
-      <textarea id="impulse-text" rows="4" maxlength="200" placeholder="比如：同事给了块蛋糕，就吃一口应该没事吧"></textarea>
-      <div class="field-hint"><span id="impulse-count">0</span>/200</div>
-      <button class="primary-btn" id="impulse-submit" disabled>说给 BioBite 听</button>
+    <!-- 相机：蛇嘴作为取景器（BOABITE_DESIGN.md §6.1） -->
+    <main class="screen cam-screen" data-screen="camera" hidden>
+      <p class="cam-hint" id="cam-hint">把想吃的东西放进蛇嘴里</p>
+
+      <div class="cam-stage">
+        <!-- 纵向蛇头：上端略尖的蛋形轮廓，两只点眼在上方 -->
+        <svg class="cam-head" viewBox="0 0 444 500" aria-hidden="true">
+          <path vector-effect="non-scaling-stroke"
+                d="M222 8c78 0 190 82 202 242 10 130-84 242-202 242S10 380 20 250C32 90 144 8 222 8Z"/>
+          <circle class="cam-eye" cx="125" cy="74" r="7.5" />
+          <circle class="cam-eye" cx="291" cy="74" r="7.5" />
+        </svg>
+
+        <!-- 取景区：正圆开口，实时预览裁进这里 -->
+        <div class="cam-mouth">
+          <video id="cam-video" playsinline muted autoplay></video>
+          <canvas id="cam-canvas" hidden></canvas>
+          <img id="cam-shot" alt="" hidden />
+          <p class="cam-fallback" id="cam-fallback" hidden></p>
+        </div>
+      </div>
+
+      <!-- 拍摄前：相册 / 快门 / 翻转 -->
+      <div class="cam-bar" id="cam-bar">
+        <button class="cam-side" id="cam-album" aria-label="从相册选择">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="5.4" width="17.6" height="13.2" rx="2.4"/><path d="M6.6 15.4l3.3-3.6 2.7 2.6 2.4-2.9 3 3.9"/><circle cx="9" cy="9.6" r="1.15"/></svg>
+        </button>
+        <button class="cam-shutter" id="cam-shutter" aria-label="拍摄"><span></span></button>
+        <button class="cam-side" id="cam-flip" aria-label="切换前后摄像头">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 11.2A7.8 7.8 0 0 1 17.6 7.4l1.8 1.6"/><path d="M19.8 12.8A7.8 7.8 0 0 1 6.4 16.6l-1.8-1.6"/><path d="M19.6 5.4v4.1h-4.1M4.4 18.6v-4.1h4.1"/></svg>
+        </button>
+      </div>
+
+      <!-- 拍摄后：重拍 / 用这张（§6.1 三种明确状态） -->
+      <div class="cam-confirm" id="cam-confirm" hidden>
+        <button class="ghost-btn" id="cam-retake">重拍</button>
+        <button class="primary-btn" id="cam-use">用这张</button>
+      </div>
+      <p class="cam-cut-note" id="cam-cut-note" hidden></p>
+
+      <input id="cam-file" type="file" accept="image/*" hidden />
     </main>
 
-    <!-- AI 回应 -->
-    <main class="screen" data-screen="response" hidden>
-      <div id="response-body"></div>
+    <!-- 填写页：两个必填字段（BOABITE_DESIGN.md §6.2） -->
+    <main class="screen feed-screen" data-screen="feed" hidden>
+      <!-- 蛇头线稿，取景圆里放刚确认的食物轮廓 -->
+      <div class="feed-head-wrap">
+        <svg class="feed-head" viewBox="0 0 444 500" aria-hidden="true">
+          <path vector-effect="non-scaling-stroke"
+                d="M222 8c78 0 190 82 202 242 10 130-84 242-202 242S10 380 20 250C32 90 144 8 222 8Z"/>
+          <path class="feed-lash" vector-effect="non-scaling-stroke" d="M138 120c2-9 5-15 9-19" />
+          <path class="feed-lash" vector-effect="non-scaling-stroke" d="M297 120c-2-9-5-15-9-19" />
+        </svg>
+        <div class="feed-mouth">
+          <img id="feed-shot" alt="刚刚确认的食物" />
+        </div>
+      </div>
+
+      <div class="feed-fields">
+        <div class="feed-field">
+          <label class="feed-label" for="feed-name"><span class="feed-num">1</span>这是什么</label>
+          <input id="feed-name" maxlength="20" autocomplete="off" enterkeyhint="next" />
+        </div>
+        <div class="feed-field">
+          <label class="feed-label" for="feed-reason"><span class="feed-num">2</span>为什么你忍住不吃</label>
+          <input id="feed-reason" maxlength="40" autocomplete="off" enterkeyhint="done" />
+        </div>
+      </div>
+
+      <div class="feed-actions">
+        <button class="sketch-btn" id="feed-cancel">取 消</button>
+        <button class="sketch-btn is-primary" id="feed-confirm" disabled>确 认</button>
+      </div>
+    </main>
+
+    <!-- AI 分析与吞食反馈（BOABITE_DESIGN.md §6.3 / §6.4） -->
+    <main class="screen swallow-screen" data-screen="analyze" hidden>
+      <!-- 吞下食物后的蛇身：鼓起的肚子，里面是食物轮廓 -->
+      <section class="swallow-stage" aria-label="蛇吞下了食物">
+        <svg class="swallow-snake" viewBox="0 0 320 190" aria-hidden="true">
+          <defs>
+            <clipPath id="belly-clip"><path id="belly-shape" d="" /></clipPath>
+          </defs>
+          <!-- 食物轮廓裁进肚子里 -->
+          <g clip-path="url(#belly-clip)" id="belly-foods"></g>
+          <!-- 蛇身轮廓画在食物之上，线稿托住实物（§5.4） -->
+          <path id="belly-outline" vector-effect="non-scaling-stroke" d="" />
+          <circle class="snake-eye" cx="296" cy="167" r="2.1" />
+        </svg>
+      </section>
+
+      <!-- 需耗时 / 热量，左右两栏 -->
+      <section class="swallow-metrics" aria-label="这份食物">
+        <div class="swallow-metric">
+          <span class="swallow-metric-label">需耗时</span>
+          <strong class="swallow-metric-value" id="swallow-duration">—</strong>
+        </div>
+        <div class="swallow-metric is-right">
+          <span class="swallow-metric-label">热量</span>
+          <strong class="swallow-metric-value" id="swallow-calories">—</strong>
+        </div>
+      </section>
+
+      <p class="swallow-note" id="swallow-note"></p>
+
+      <div class="swallow-actions" id="swallow-actions"></div>
     </main>
 
     <!-- 结果 -->
-    <main class="screen" data-screen="done" hidden>
-      <div class="done" id="done-body"></div>
-      <button class="primary-btn" data-go="home">回到首页</button>
-    </main>
-
-    <!-- 硬边界规则 -->
+    <!-- 蛇设定：这里填的人设会进入 AI 的 prompt，改变蛇说话的方式 -->
     <main class="screen" data-screen="setup" hidden>
-      <h1 class="page-title">我的硬边界</h1>
-      <p class="page-sub">写下你为什么想变瘦，再给自己定几条具体的规则。BioBite 会一直记住它们。</p>
-      <label class="label" for="goal">我的目标</label>
-      <textarea id="goal" rows="3" maxlength="120" placeholder="比如：年底之前穿上那条收腰的裙子"></textarea>
-      <label class="label" for="context">我最容易多吃的时候</label>
-      <input id="context" maxlength="80" placeholder="比如：加班到很晚、同事分零食" />
-      <button class="ghost-btn" id="rules-ai">AI 帮我变成具体规则</button>
-      <label class="label">我的规则</label>
-      <ul class="rule-list" id="rule-list"></ul>
-      <div class="add-rule">
-        <input id="rule-input" maxlength="40" placeholder="如果……，就……" />
-        <button class="small-btn" id="rule-add">添加</button>
+      <h1 class="page-title">蛇设定</h1>
+      <p class="page-sub">这里填的东西会影响蛇怎么跟你说话。</p>
+
+      <label class="label" for="snake-name">给它起个名字</label>
+      <input id="snake-name" maxlength="12" autocomplete="off" placeholder="不填就还是叫蛇" />
+
+      <label class="label">它说话的样子</label>
+      <div class="tone-grid" id="tone-grid" role="radiogroup" aria-label="语气"></div>
+
+      <label class="label" for="snake-extra">还想让它记住什么</label>
+      <textarea id="snake-extra" rows="3" maxlength="120" placeholder="比如：你怕冷，冬天话会变少"></textarea>
+      <div class="field-hint"><span id="extra-count">0</span>/120</div>
+
+      <!-- 直接给出这套设定下的一句样例，避免用户只能靠想象 -->
+      <div class="persona-preview">
+        <p class="persona-preview-label">它大概会这么说</p>
+        <p class="persona-preview-text" id="persona-preview">先填一下上面的设定</p>
+        <button class="text-btn" id="persona-try">听它说一句</button>
       </div>
-      <button class="primary-btn" id="setup-save">保存我的承诺</button>
+
+      <button class="primary-btn" id="setup-save">保存</button>
     </main>
 
-    <!-- 设置 -->
     <main class="screen" data-screen="settings" hidden>
       <h1 class="page-title">模型设置</h1>
-      <p class="page-sub">不填 API Key 时使用演示回应。Key 只保存在这台设备上。</p>
+      <p class="page-sub">必须配置才能使用，蛇的每句话都由模型生成。Key 只保存在这台设备上。</p>
       <label class="label" for="provider">模型服务</label>
       <select id="provider"></select>
       <label class="label" for="base-url">接口地址</label>
