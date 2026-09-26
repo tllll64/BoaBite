@@ -1,5 +1,5 @@
 // 存储适配层。迁移到小程序时，只需把这里换成 wx.getStorageSync / wx.setStorageSync。
-const PREFIX = 'biobite:';
+const PREFIX = 'boabite:';
 
 export function load(key, fallback) {
   try {

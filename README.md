@@ -1,10 +1,10 @@
-# BioBite 快速开始指南
+# BoaBite 快速开始指南
 
 ## 立即体验（演示模式）
 
 ### 1. 启动开发服务器
 ```bash
-cd /Users/xiaoshizi/Documents/GitHub/BioBite
+cd /Users/xiaoshizi/Documents/GitHub/BoaBite
 npm run dev
 ```
 
@@ -22,7 +22,7 @@ npm run dev
 - 回到首页，点击"我想吃点什么"
 - 选择场景：例如"同事递来的小零食"
 - 输入想法：`同事给了块蛋糕，就吃一口应该没事吧`
-- 点击"说给 BioBite 听"
+- 点击"说给 BoaBite 听"
 - 等待 AI 回应（演示模式约 0.9 秒）
 - 查看 AI 的温和反馈和"吃/不吃"之外的选择
 
@@ -97,7 +97,7 @@ AI 回应页面（反馈 + 选择）
 | 功能 | 调用时机 | 返回内容 |
 |------|--------|--------|
 | `suggestRules()` | 点击"AI 帮我变成规则" | 3 条具体规则 |
-| `respondToImpulse()` | 点击"说给 BioBite 听" | 冲动分析 + 3 个替代选择 |
+| `respondToImpulse()` | 点击"说给 BoaBite 听" | 冲动分析 + 3 个替代选择 |
 | `estimateFood()` | 自动（冲动输入后） | 食物名称 + 热量 + 时长 |
 
 ---
@@ -105,7 +105,7 @@ AI 回应页面（反馈 + 选择）
 ## 项目文件结构
 
 ```
-BioBite/
+BoaBite/
 ├── index.html                 # 5 个屏幕的主页面
 ├── package.json              # 项目配置
 ├── PRD.md                    # 产品需求文档
@@ -185,7 +185,7 @@ localStorage.clear();
 
 ### 冲动应对 Prompt
 ```
-你是 BioBite，一个陪伴用户戒掉"多吃一口"心态的伙伴。
+你是 BoaBite，一个陪伴用户戒掉"多吃一口"心态的伙伴。
 用户正处在想吃多余食物的冲动时刻，并且可能正在给自己找借口。
 请温和、简短、不说教地回应...
 ```
@@ -208,7 +208,7 @@ localStorage.clear();
 
 **初始提交（2026-09-25）：**
 ```
-feat: BioBite v2 初始化 - PRD、设计系统、AI 链路完整打通
+feat: BoaBite v2 初始化 - PRD、设计系统、AI 链路完整打通
 
 ✅ PRD 完整定版
 ✅ 设计风格指南（色彩、字体、交互、无障碍）
