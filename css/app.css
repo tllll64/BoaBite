@@ -59,6 +59,14 @@ html, body {
   height: var(--app-h);
   margin: 0 auto;
   padding: 0 16px calc(24px + env(safe-area-inset-bottom));
+  /* body 是黑的（桌面预览时衬托机身），但各屏幕的线稿和文字都是黑色，
+     所以画布本身铺纸纹白底；相机页自己覆盖成深色 */
+  background-color: var(--boa-white);
+  background-image: var(--boa-paper-texture);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  color: var(--boa-ink);
   overflow: hidden;   /* 机身内不整体滚动，滚动交给各屏幕自己的内容区 */
   /* 纵向 flex：顶栏占固定高度，当前屏幕吃掉剩下的空间 */
   display: flex;
@@ -912,6 +920,52 @@ textarea:focus, input:focus, select:focus { outline: none; border-color: var(--a
   .swallow-note { font-size: 15px; line-height: 1.9; }
   .swallow-metric-value { font-size: 26px; }
 }
+
+/* ============================================================
+   蛇设定页：这里填的人设会进入 prompt
+   ============================================================ */
+.tone-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tone-chip {
+  padding: 9px 16px;
+  border-radius: 99px;
+  border: 1.4px solid var(--boa-line);
+  background: var(--boa-white);
+  color: var(--boa-ink);
+  font-family: var(--font-display-cn);
+  font-size: 15px;
+  letter-spacing: .04em;
+  transition: background .12s ease, color .12s ease;
+}
+.tone-chip[aria-checked="true"] {
+  background: var(--boa-ink);
+  color: var(--boa-white);
+}
+
+/* 样例区：让用户先听一句再决定要不要存 */
+.persona-preview {
+  border: 1.4px dashed var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.persona-preview-label {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: .06em;
+}
+.persona-preview-text {
+  margin: 0;
+  font-family: var(--font-display-cn);
+  font-size: 15px;
+  line-height: 1.9;
+  letter-spacing: .03em;
+  color: var(--boa-ink);
+  min-height: 2.8em;
+}
+.persona-preview .text-btn { align-self: flex-start; padding: 4px 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .screen, .skeleton { animation: none; }
