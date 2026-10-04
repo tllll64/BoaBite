@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "python3 -m http.server 8000 --bind 0.0.0.0",
+    "dev:v3": "python3 -m http.server 8003 --bind 0.0.0.0 --directory devlog/v3/app",
     "capture": "node devlog/capture.mjs",
     "check-ai": "node scripts/check-ai.mjs"
   },
