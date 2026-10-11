@@ -1,0 +1,590 @@
+[
+  {
+    "id": 1,
+    "name": "agent.png",
+    "width": 87,
+    "height": 87,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      87,
+      87
+    ],
+    "sha256": "a242af35a9edd0d0bdcc6109737e595919510e744bcab044e9e5f1cbbbbd2b20"
+  },
+  {
+    "id": 2,
+    "name": "backgound.png",
+    "width": 393,
+    "height": 852,
+    "alpha": false,
+    "bbox": [
+      0,
+      0,
+      393,
+      852
+    ],
+    "sha256": "118567c0483daf2e11ea2f1cc9a1ee5d013d6985afe2a099da2eef341cf4539e"
+  },
+  {
+    "id": 3,
+    "name": "BoaBite.png",
+    "width": 268,
+    "height": 84,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      267,
+      84
+    ],
+    "sha256": "4b911b89a4c737321a9e5fa5e8d9906fe17caebe61d3c2c5f2e468f4da1e8c23"
+  },
+  {
+    "id": 4,
+    "name": "boahead2.png",
+    "width": 720,
+    "height": 856,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      719,
+      856
+    ],
+    "sha256": "969b93a99af4dcca17982a8424f51a3ef7bc2cf816fb23413dedb2af0233e762"
+  },
+  {
+    "id": 5,
+    "name": "boahead3.png",
+    "width": 608,
+    "height": 692,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      608,
+      692
+    ],
+    "sha256": "449fffe95d0c6ec4229abf8c7a646886786c569db97be0f14baf1dc300da537b"
+  },
+  {
+    "id": 6,
+    "name": "bread mask.png",
+    "width": 460,
+    "height": 360,
+    "alpha": true,
+    "bbox": [
+      3,
+      4,
+      456,
+      359
+    ],
+    "sha256": "ad00b1ff19fd8d407c2ba4f65b3baad3799c600f293f08a15fd5f82cf849b9d5"
+  },
+  {
+    "id": 7,
+    "name": "bread.png",
+    "width": 912,
+    "height": 1436,
+    "alpha": false,
+    "bbox": [
+      0,
+      0,
+      912,
+      1436
+    ],
+    "sha256": "5d315023a844a6d066ed995c03a5633aef9d31da9cea011a2013e25baf439c06"
+  },
+  {
+    "id": 8,
+    "name": "bubble.png",
+    "width": 657,
+    "height": 163,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      657,
+      163
+    ],
+    "sha256": "717def15ee5e59d914796df2e22a63959a0c8864fa1b2902b386d725e16f1461"
+  },
+  {
+    "id": 9,
+    "name": "bubble3.png",
+    "width": 615,
+    "height": 156,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      615,
+      156
+    ],
+    "sha256": "e03b919328556ee58937f613cee100a36ee40fa300cc4c066350b65cc7644827"
+  },
+  {
+    "id": 10,
+    "name": "continue.png",
+    "width": 301,
+    "height": 123,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      301,
+      123
+    ],
+    "sha256": "19a2dbc46ce70b4924c67a6cda7878d187c5476bbef664eae247032f149311a2"
+  },
+  {
+    "id": 11,
+    "name": "CTA.png",
+    "width": 486,
+    "height": 123,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      486,
+      123
+    ],
+    "sha256": "bb90b22ff6bc6d9ac91d23c52842050ff474288fdce57e956d4e1418e4df1c71"
+  },
+  {
+    "id": 12,
+    "name": "done.png",
+    "width": 301,
+    "height": 123,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      301,
+      123
+    ],
+    "sha256": "5dd80fc2f0970c270ee555809c43cc01e946f274fefa555695474fdf987dda02"
+  },
+  {
+    "id": 13,
+    "name": "example.png",
+    "width": 393,
+    "height": 718,
+    "alpha": false,
+    "bbox": [
+      0,
+      0,
+      393,
+      718
+    ],
+    "sha256": "9609644be95c69356e20571199f860388e1d3b068cfb547378b4c8c2ce539a86"
+  },
+  {
+    "id": 14,
+    "name": "exit.png",
+    "width": 72,
+    "height": 72,
+    "alpha": true,
+    "bbox": [
+      8,
+      9,
+      64,
+      64
+    ],
+    "sha256": "91e2727c880572fd03172a1de11e8f24db9728ecce6fe4a89e85dab1a86ed35c"
+  },
+  {
+    "id": 15,
+    "name": "eyes.png",
+    "width": 136,
+    "height": 50,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      136,
+      50
+    ],
+    "sha256": "91cfe6d2607dc90e89d43891130e3873dca1d5353e34cadd739da529521d951b"
+  },
+  {
+    "id": 16,
+    "name": "goon.png",
+    "width": 302,
+    "height": 123,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      302,
+      123
+    ],
+    "sha256": "bc3387e9d007fae5489c6f9277230729d33747320fe0b672932b88c1e5cc8022"
+  },
+  {
+    "id": 17,
+    "name": "input.png",
+    "width": 675,
+    "height": 207,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      675,
+      207
+    ],
+    "sha256": "895382db30821ee0009abf4d7e605c5344a9bec396344b11a2630d4e8a2f04ee"
+  },
+  {
+    "id": 18,
+    "name": "little_bubble.png",
+    "width": 329,
+    "height": 135,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      329,
+      135
+    ],
+    "sha256": "8715fa9afdbb575d1c3511005641160239c25e14a2e4e4c859caf0e5f3c4a09d"
+  },
+  {
+    "id": 19,
+    "name": "loading.png",
+    "width": 574,
+    "height": 408,
+    "alpha": true,
+    "bbox": [
+      70,
+      45,
+      527,
+      373
+    ],
+    "sha256": "891d1d03605f4a1178d788069ea88b31bf5d946b938fe52cc4e1684f98b019a8"
+  },
+  {
+    "id": 20,
+    "name": "mock_image.png",
+    "width": 393,
+    "height": 718,
+    "alpha": false,
+    "bbox": [
+      0,
+      0,
+      393,
+      718
+    ],
+    "sha256": "fc755eebbdd0137c91e7fc37d624a187af250e6771d751fc198bbd4e412a00d9"
+  },
+  {
+    "id": 21,
+    "name": "mouth.png",
+    "width": 720,
+    "height": 856,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      719,
+      856
+    ],
+    "sha256": "4d339aaac9d8d452bad1e1c0112fa8b4071575a8af0f5099aaa75cd875b3be35"
+  },
+  {
+    "id": 22,
+    "name": "Output.png",
+    "width": 661,
+    "height": 396,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      661,
+      396
+    ],
+    "sha256": "a4492eca87c083d2198faff62bb61b75ee2d10fa839188ee4baf7a882b081b0e"
+  },
+  {
+    "id": 23,
+    "name": "photo.png",
+    "width": 72,
+    "height": 72,
+    "alpha": true,
+    "bbox": [
+      3,
+      1,
+      71,
+      69
+    ],
+    "sha256": "11c5f11350ecade2f103789752667578ff1f786335e720e74669629af2f8451e"
+  },
+  {
+    "id": 24,
+    "name": "record.png",
+    "width": 87,
+    "height": 87,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      87,
+      87
+    ],
+    "sha256": "4cdf24cbf599c3e99650f0f25b033006f33ba3cbe3711511218664ba05a7fa3d"
+  },
+  {
+    "id": 25,
+    "name": "regret.png",
+    "width": 302,
+    "height": 123,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      302,
+      123
+    ],
+    "sha256": "eb7326b2143e28937dd7c305e2360570ae234e07880662e7dfaae6425d57a1ac"
+  },
+  {
+    "id": 26,
+    "name": "return.png",
+    "width": 72,
+    "height": 72,
+    "alpha": true,
+    "bbox": [
+      2,
+      3,
+      71,
+      67
+    ],
+    "sha256": "a4f0ad0df495d812a46b8f957e874bee9bc3fb0762f39df219d19dd6005640f1"
+  },
+  {
+    "id": 27,
+    "name": "share.png",
+    "width": 87,
+    "height": 87,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      87,
+      87
+    ],
+    "sha256": "d15c9b47235555257dd7ad676e9f41f84e8db2608fed8088704347e002080913"
+  },
+  {
+    "id": 28,
+    "name": "snack1.png",
+    "width": 730,
+    "height": 162,
+    "alpha": true,
+    "bbox": [
+      19,
+      0,
+      728,
+      157
+    ],
+    "sha256": "6cf4bd377c5b08f9944df1c878a7df268764eb2a47884a66139aa9aa02451675"
+  },
+  {
+    "id": 29,
+    "name": "snack2.png",
+    "width": 730,
+    "height": 162,
+    "alpha": true,
+    "bbox": [
+      21,
+      0,
+      730,
+      157
+    ],
+    "sha256": "620da2e66acc2090082e99733d36c4b963c7d4dffe31307f04743bcb3907cc4f"
+  },
+  {
+    "id": 30,
+    "name": "snack3.png",
+    "width": 730,
+    "height": 228,
+    "alpha": true,
+    "bbox": [
+      18,
+      0,
+      709,
+      227
+    ],
+    "sha256": "94fca9c5be4d1681080efd4c1e3be214e2708d1d2f0362764d54bed2bded523b"
+  },
+  {
+    "id": 31,
+    "name": "snack4.png",
+    "width": 730,
+    "height": 228,
+    "alpha": true,
+    "bbox": [
+      18,
+      0,
+      709,
+      227
+    ],
+    "sha256": "f2bdb23e6a9951cfb9d4992847364486e17be3242aaa3c3f1c006b8993656d86"
+  },
+  {
+    "id": 32,
+    "name": "snake1.png",
+    "width": 709,
+    "height": 156,
+    "alpha": true,
+    "bbox": [
+      19,
+      0,
+      709,
+      156
+    ],
+    "sha256": "54c75428fbb5e5e289b1b74a56819ad0d9b91847109b401b6ada1f5dbde3857a"
+  },
+  {
+    "id": 33,
+    "name": "snake2.png",
+    "width": 709,
+    "height": 156,
+    "alpha": true,
+    "bbox": [
+      19,
+      0,
+      709,
+      156
+    ],
+    "sha256": "f1a84474471265f3b8e50ae543bae3e394f693600e8c6437bdde2a4b660ce85e"
+  },
+  {
+    "id": 34,
+    "name": "Status Bar.png",
+    "width": 780,
+    "height": 94,
+    "alpha": true,
+    "bbox": [
+      91,
+      38,
+      729,
+      67
+    ],
+    "sha256": "e36252fa860313f526054d055fd90664ee5d3b12e30113251ea6f42288d4978c"
+  },
+  {
+    "id": 35,
+    "name": "Status Bar2.png",
+    "width": 780,
+    "height": 94,
+    "alpha": true,
+    "bbox": [
+      91,
+      38,
+      729,
+      67
+    ],
+    "sha256": "0979d07ac0c897ed0e0e9522bd65d340ad311ddf90b3bf34282f2984ca3c98fd"
+  },
+  {
+    "id": 36,
+    "name": "System Bar.png",
+    "width": 786,
+    "height": 68,
+    "alpha": true,
+    "bbox": [
+      260,
+      42,
+      528,
+      52
+    ],
+    "sha256": "0580bb1085237e93d6398c5e8586f6c633f8122c70f9482192585a4bbe23117f"
+  },
+  {
+    "id": 37,
+    "name": "System_Bar.png",
+    "width": 786,
+    "height": 68,
+    "alpha": true,
+    "bbox": [
+      260,
+      42,
+      528,
+      52
+    ],
+    "sha256": "0580bb1085237e93d6398c5e8586f6c633f8122c70f9482192585a4bbe23117f"
+  },
+  {
+    "id": 38,
+    "name": "take_photo.png",
+    "width": 168,
+    "height": 168,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      168,
+      168
+    ],
+    "sha256": "88f1cd3706b59ac21c8b208e5b01c87190ac0b504c46557144c0741ecb322862"
+  },
+  {
+    "id": 39,
+    "name": "today_record.png",
+    "width": 231,
+    "height": 79,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      231,
+      78
+    ],
+    "sha256": "bb496b77e8f3e1de911f041e9072d732a3953756eba44f932b5db6fc3a9b27e6"
+  },
+  {
+    "id": 40,
+    "name": "Xray-Off.png",
+    "width": 87,
+    "height": 87,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      87,
+      87
+    ],
+    "sha256": "36ed380ec31f24ac2a3e2110167b470572c11868a9b288a10419d761f3e5c523"
+  },
+  {
+    "id": 41,
+    "name": "Xray-On.png",
+    "width": 87,
+    "height": 87,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      87,
+      87
+    ],
+    "sha256": "11987e652ed0da37076050908477796565d1579f7b96e562cf2992e05c46779f"
+  },
+  {
+    "id": 42,
+    "name": "yes.png",
+    "width": 168,
+    "height": 168,
+    "alpha": true,
+    "bbox": [
+      0,
+      0,
+      168,
+      168
+    ],
+    "sha256": "83dd5c37507ba4a78d08811ea7404b46c49f62b1883e61c14818dd15b893b2e6"
+  }
+]
