@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="description" content="BoaBite Bite Lab — 拍照识物与品鉴评估测试台，AI 走后端代理。" />
+  <title>BoaBite · Bite Lab</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23fff'/%3E%3C/svg%3E" />
+  <style>
+    /* Vercel / Geist 基调，但收敛呈现：只突出核心结果，其余一律弱化 */
+    :root {
+      --bg: #ffffff;
+      --bg-2: #fafafa;
+      --hover: #f5f5f5;
+      --active: #eaeaea;
+      --border: #eaeaea;
+      --border-hover: #999999;
+      --text-2: #888888;
+      --text: #000000;
+      --blue: #0070F3;
+      --red: #E00;
+      --amber: #F5A623;
+      --r-control: 6px;
+      --r-card: 10px;
+      --r-cam: 10px;
+      --font-sans: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+    .lab { max-width: 1120px; margin: 0 auto; padding: 36px 24px 48px; }
+
+    /* 顶栏：只留品牌 + 一个状态点 */
+    .lab-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .brand-row { display: flex; align-items: baseline; gap: 8px; }
+    .brand { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+    .brand-sep { color: var(--text-2); font-weight: 300; }
+    .brand-sub { font-size: 17px; font-weight: 400; color: var(--text-2); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-2);
+      white-space: nowrap;
+    }
+    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-2); }
+    .status-pill.is-ok .dot { background: var(--blue); }
+    .status-pill.is-mock .dot { background: var(--amber); }
+    .status-pill.is-bad .dot { background: var(--red); }
+
+    /* 主体：左侧列表 + 主区 */
+    .lab-body { display: flex; gap: 16px; align-items: flex-start; margin-top: 18px; }
+
+    .card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-card);
+      padding: 18px;
+    }
+    .card + .card { margin-top: 14px; }
+    .card-title { margin: 0 0 14px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 8px; }
+    .card-title .idx { font-family: var(--font-mono); font-size: 10px; color: var(--text-2); font-weight: 500; }
+
+    /* 左侧测试列表 */
+    .sidebar { width: 248px; flex-shrink: 0; position: sticky; top: 16px; }
+    .side-item {
+      display: flex; align-items: center; gap: 9px; width: 100%;
+      appearance: none; cursor: pointer; text-align: left;
+      font-family: var(--font-sans); font-size: 13px; color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--r-control);
+      background: var(--bg); padding: 8px 11px; margin-bottom: 4px;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .side-item:hover { background: var(--hover); }
+    .side-item.is-active { background: var(--active); border-color: var(--border-hover); }
+    .side-item .plus { color: var(--blue); }
+    .side-label { font-size: 10px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; margin: 12px 0 6px; }
+    .hist-list { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow-y: auto; }
+    .hist-item {
+      display: flex; align-items: center; gap: 9px; width: 100%;
+      appearance: none; cursor: pointer; text-align: left;
+      background: var(--bg); border: 1px solid transparent; border-radius: var(--r-control);
+      padding: 6px 7px; margin-bottom: 2px; font-family: var(--font-sans);
+      transition: background .15s ease;
+    }
+    .hist-item:hover { background: var(--hover); }
+    .hist-item.is-active { background: var(--bg-2); border-color: var(--border); }
+    .hist-item .thumb {
+      width: 36px; height: 36px; border-radius: 5px; object-fit: cover; flex-shrink: 0;
+      background: var(--bg-2); border: 1px solid var(--border);
+    }
+    .hist-item .info { min-width: 0; flex: 1; }
+    .hist-item .info .name { display: block; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hist-item .info .name.is-none { color: var(--text-2); }
+    .hist-item .info .time { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text-2); margin-top: 1px; }
+    .hist-empty { font-size: 12px; color: var(--text-2); line-height: 1.6; margin: 0; }
+
+    /* 主区 */
+    .main { flex: 1; min-width: 0; }
+    .pipeline { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+    /* 两个板块等高：卡片纵向排布，输出区吃掉剩余高度 */
+    .pipeline > .card { display: flex; flex-direction: column; margin-top: 0; }
+    .pipeline .out-area { flex: 1; min-height: 40px; }
+
+    /* 表单 */
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; }
+    .field label em { font-style: normal; color: var(--blue); }
+
+    .lab input[type="text"], .lab select, .lab textarea {
+      width: 100%; font-family: var(--font-sans); font-size: 14px; color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--r-control); padding: 8px 11px;
+      background: var(--bg); outline: none; transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .lab textarea { resize: vertical; min-height: 56px; line-height: 1.55; }
+    .lab input::placeholder, .lab textarea::placeholder { color: var(--text-2); }
+    .lab input:hover, .lab select:hover, .lab textarea:hover { border-color: var(--border-hover); }
+    .lab input:focus, .lab select:focus, .lab textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,243,.15); }
+    select { appearance: auto; }
+
+    .btn-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .btn-row.is-fill .btn { flex: 1; text-align: center; }
+    .btn {
+      appearance: none; cursor: pointer;
+      font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+      border-radius: var(--r-control); padding: 8px 16px;
+      border: 1px solid #000; background: #000; color: #fff;
+      transition: background .15s ease, border-color .15s ease, transform .05s ease;
+    }
+    .btn:hover { background: #262626; border-color: #262626; }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(0,112,243,.4); }
+    .btn.is-ghost { background: var(--bg); color: var(--text); border-color: var(--border); }
+    .btn.is-ghost:hover { background: var(--bg-2); border-color: var(--border-hover); }
+    .btn.is-small { font-size: 12px; padding: 6px 12px; }
+    .btn.is-block { width: 100%; margin-top: 2px; }
+    .btn.is-danger { background: var(--bg); color: var(--red); border-color: var(--border); }
+    .btn.is-danger:hover { background: rgba(238,0,0,.06); border-color: var(--red); }
+
+    /* 相机取景：正方形 */
+    .cam-stage { position: relative; aspect-ratio: 1 / 1; border-radius: var(--r-cam); overflow: hidden; background: #000; margin-bottom: 12px; }
+    .cam-stage video, .cam-stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cam-stage .cam-fallback {
+      position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+      color: #999; font-size: 13px; text-align: center; padding: 0 20px; margin: 0;
+    }
+    .cam-stage.is-off .cam-fallback { display: flex; }
+
+    /* 输出结果：重点区，不加边框，靠留白和大字立层级 */
+    .out-area { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .out-empty { color: var(--text-2); font-size: 13px; margin: 0; }
+    .result-photo {
+      display: block; width: 100%; max-height: 200px; object-fit: cover;
+      border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2);
+      margin-bottom: 12px;
+    }
+    .food-name { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin: 0; color: var(--text); }
+    .food-name + .out-meta { margin-top: 8px; }
+    .conf-line { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); margin: 6px 0 0; }
+
+    .out-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+    .meta-chip {
+      font-family: var(--font-mono); font-size: 12px; color: var(--text-2);
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px;
+    }
+    .meta-chip b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* 品鉴结果：热量数字是主角 */
+    .kcal-row { display: flex; align-items: baseline; gap: 8px; }
+    .kcal-num { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+    .kcal-unit { font-size: 14px; color: var(--text-2); }
+    .kcal-label { display: block; font-size: 11px; color: var(--text-2); margin: 14px 0 2px; }
+    .snake-note {
+      font-size: 15px; line-height: 1.75; color: #111;
+      white-space: pre-wrap; margin: 12px 0 0; max-width: 64ch;
+    }
+    .raw-block { margin-top: 12px; font-size: 11px; color: var(--text-2); }
+    .raw-block summary { cursor: pointer; font-weight: 500; user-select: none; }
+    .raw-block summary:hover { color: var(--text); }
+    .raw-block pre {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px; font-family: var(--font-mono); font-size: 11px; line-height: 1.6; overflow-x: auto;
+      white-space: pre-wrap; word-break: break-all; margin: 8px 0 0; color: var(--text);
+    }
+    .err-box {
+      color: var(--red); background: rgba(238,0,0,.04); border: 1px solid rgba(238,0,0,.18);
+      border-radius: var(--r-control); padding: 10px 12px; font-size: 13px; white-space: pre-wrap;
+    }
+    .status-note { font-size: 12px; color: var(--text-2); margin: 10px 0 0; }
+
+    /* 历史测试详情 */
+    .detail-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .detail-head .d-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); }
+    .detail-sec { margin-top: 16px; }
+    .detail-sec-title { font-size: 10px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 6px; }
+
+    /* Prompt 查看 / 请求日志：工具性，收敛到最小 */
+    .util-title { font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 10px; }
+    .prompt-item { border: 1px solid var(--border); border-radius: var(--r-control); margin-bottom: 6px; background: var(--bg); }
+    .prompt-item summary {
+      cursor: pointer; list-style: none; user-select: none;
+      font-family: var(--font-mono); font-size: 11px; color: var(--text);
+      padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .prompt-item summary::-webkit-details-marker { display: none; }
+    .prompt-item summary:hover { background: var(--bg-2); }
+    .prompt-item .p-chev { color: var(--text-2); font-size: 11px; transition: transform .15s ease; }
+    .prompt-item[open] summary .p-chev { transform: rotate(180deg); }
+    .prompt-item pre {
+      margin: 0; padding: 12px; border-top: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 11px; line-height: 1.6;
+      white-space: pre-wrap; word-break: break-word; color: var(--text);
+      background: var(--bg-2); border-radius: 0 0 var(--r-control) var(--r-control);
+    }
+    .prompt-note { font-size: 11px; color: var(--text-2); margin: 8px 0 0; }
+    .prompt-note code { font-family: var(--font-mono); font-size: 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+
+    /* 蛇形象映射表 */
+    .persona-map { display: grid; gap: 6px; }
+    .persona-row {
+      display: flex; gap: 12px; align-items: baseline;
+      border: 1px solid var(--border); border-radius: var(--r-control);
+      padding: 8px 11px; background: var(--bg-2);
+    }
+    .persona-label { flex-shrink: 0; font-size: 12px; font-weight: 600; color: var(--text); }
+    .persona-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+
+    .log-list { list-style: none; margin: 0; padding: 0; }
+    .log-item {
+      display: flex; gap: 10px; align-items: center;
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-2);
+      padding: 5px 2px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums;
+    }
+    .log-item .st { width: 28px; font-weight: 600; }
+    .log-item .st.ok { color: var(--blue); }
+    .log-item .st.bad { color: var(--red); }
+    .log-item .ms { margin-left: auto; white-space: nowrap; }
+    .log-empty { color: var(--text-2); font-size: 12px; margin: 0; }
+    .log-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+
+    /* 页脚：接口 / 模型信息收到底部 */
+    .lab-foot { margin-top: 32px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .lab-foot p { font-family: var(--font-mono); font-size: 10px; color: var(--text-2); margin: 0; line-height: 1.8; }
+    .lab-foot code { background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; color: var(--text); }
+
+    @media (max-width: 900px) {
+      .lab { padding: 24px 16px 40px; }
+      .lab-body { flex-direction: column; }
+      .sidebar { position: static; width: 100%; }
+      .hist-list { max-height: 200px; }
+      .pipeline { grid-template-columns: 1fr; }
+      .kcal-num { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lab">
+    <header class="lab-head">
+      <div class="brand-row">
+        <span class="brand">BoaBite</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-sub">Bite Lab</span>
+      </div>
+      <span class="status-pill" id="status"><span class="dot"></span>connecting…</span>
+    </header>
+
+    <div class="lab-body">
+      <!-- 左侧：测试列表 -->
+      <aside class="sidebar">
+        <div class="card">
+          <button class="side-item is-active" id="new-test"><span class="plus">＋</span>新建测试</button>
+          <p class="side-label">历史测试 <span id="hist-count"></span></p>
+          <ul class="hist-list" id="hist-list">
+            <li class="hist-empty" id="hist-empty">还没有测试。</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- 主区 -->
+      <main class="main">
+        <!-- 工作区 -->
+        <div id="view-workspace">
+          <div class="pipeline">
+            <!-- 链路一 -->
+            <section class="card" aria-label="链路一：拍照识物">
+              <h2 class="card-title"><span class="idx">01</span>拍照识物</h2>
+              <div class="cam-stage is-off" id="r-stage">
+                <video class="cam-video" playsinline muted autoplay></video>
+                <img class="cam-shot" alt="拍摄结果" hidden />
+                <canvas class="cam-canvas" hidden></canvas>
+                <p class="cam-fallback" id="r-fallback">相机打不开，可以从相册选一张。</p>
+              </div>
+              <div class="btn-row is-fill">
+                <button class="btn is-small" id="r-shutter">拍照</button>
+                <button class="btn is-ghost is-small" id="r-album">从相册选</button>
+                <input type="file" id="r-file" accept="image/*" hidden />
+              </div>
+              <div class="out-area" id="r-out">
+                <p class="out-empty">拍一张照片，识别食物名称。</p>
+              </div>
+            </section>
+
+            <!-- 链路二 -->
+            <section class="card" aria-label="链路二：品鉴评估">
+              <h2 class="card-title"><span class="idx">02</span>品鉴评估</h2>
+              <div class="field">
+                <label>食物名称 <em id="t-name-hint"></em></label>
+                <input type="text" id="t-name" placeholder="例如：一块蛋糕" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label>忍住不吃的理由</label>
+                <textarea id="t-trigger" placeholder="例如：已经吃饱了，不想再吃；留着明天享用"></textarea>
+              </div>
+              <div class="field">
+                <label>蛇形象</label>
+                <select id="t-character">
+                  <option value="greedy">贪吃蛇</option>
+                  <option value="mamba">曼巴蛇</option>
+                  <option value="beauty">美女蛇</option>
+                </select>
+              </div>
+              <button class="btn is-block" id="t-go">交给蛇品鉴</button>
+              <p class="status-note" id="t-status" hidden></p>
+              <div class="out-area" id="t-out">
+                <p class="out-empty">品鉴感言和热量估算会出现在这里。</p>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- 历史详情 -->
+        <div id="view-detail" class="card" hidden>
+          <div id="detail"></div>
+        </div>
+
+        <!-- Prompt 查看 -->
+        <div class="card">
+          <p class="util-title">Prompt 查看</p>
+          <details class="prompt-item" id="prompt-recognize">
+            <summary><span>识图 prompt</span><span class="p-chev">▾</span></summary>
+            <pre>加载中…</pre>
+          </details>
+          <div id="persona-map"></div>
+          <p class="prompt-note">展开查看三条蛇实际使用的完整 Prompt；<code>{food}</code> 和 <code>{reason}</code> 分别填入食物名称和忍住不吃的理由。</p>
+        </div>
+
+        <!-- 请求日志 -->
+        <div class="card">
+          <div class="log-head">
+            <span class="util-title" style="margin:0">请求日志</span>
+            <button class="btn is-ghost is-small" id="log-clear">清空</button>
+          </div>
+          <ul class="log-list" id="log-list"><li class="log-empty" id="log-empty">还没有请求。</li></ul>
+        </div>
+      </main>
+    </div>
+
+    <footer class="lab-foot">
+      <p>BoaBite Bite Lab · 本地测试台 · 接口 <code id="api-base"></code> · 模型 <code id="cfg"></code> · 测试记录存 localStorage</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { start as camStart, stop as camStop, capture as camCapture, readFile as camReadFile, isSupported as camSupported } from './js/camera.js';
+
+    // ---------- 基础 ----------
+    const API_BASE = (location.protocol === 'http:' && location.port === '8787')
+      ? ''
+      : 'http://localhost:8787';
+
+    document.getElementById('api-base').textContent = (API_BASE || location.origin) + '/api/';
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    async function callApi(path, body) {
+      const t0 = performance.now();
+      let res;
+      try {
+        res = await fetch(API_BASE + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+      } catch (err) {
+        return { networkError: '请求失败：' + err.message + '（后端启动了吗？试试 npm run server:mock）' };
+      }
+      const ms = Math.round(performance.now() - t0);
+      const data = await res.json().catch(() => ({}));
+      logRequest(path, res.status, ms);
+      return { networkError: '', data, ms };
+    }
+
+    // ---------- 状态 ----------
+    fetch(API_BASE + '/api/health')
+      .then((r) => r.json())
+      .then((h) => {
+        const pill = $('status');
+        const mode = h.mock ? 'mock' : (h.hasKey ? 'live' : 'no-key');
+        pill.innerHTML = '<span class="dot"></span>' + esc(mode + ' · ' + (h.model || 'no model'));
+        pill.className = 'status-pill is-' + (h.mock ? 'mock' : (h.hasKey ? 'ok' : 'bad'));
+        $('cfg').textContent = (h.model || '—') + ' / vision ' + (h.visionModel || '—');
+      })
+      .catch(() => {
+        const pill = $('status');
+        pill.innerHTML = '<span class="dot"></span>backend offline';
+        pill.className = 'status-pill is-bad';
+        $('cfg').textContent = 'offline';
+      });
+
+    // ---------- Prompt 查看 ----------
+    fetch(API_BASE + '/api/prompts')
+      .then((r) => r.json())
+      .then((p) => {
+        if (p.recognize) $('prompt-recognize').querySelector('pre').textContent = p.recognize;
+        if (p.tastePrompts) renderPersonaMap(p.tastePrompts);
+      })
+      .catch(() => {
+        document.querySelectorAll('.prompt-item pre').forEach((pre) => { pre.textContent = '后端未连接。'; });
+      });
+
+    function renderPersonaMap(personas) {
+      const box = $('persona-map');
+      box.innerHTML = '';
+      for (const p of Object.values(personas)) {
+        const row = document.createElement('details');
+        row.className = 'prompt-item';
+        const summary = document.createElement('summary');
+        const label = document.createElement('span');
+        label.textContent = (p.label || '') + ' · 完整 Prompt';
+        const arrow = document.createElement('span');
+        arrow.className = 'p-chev';
+        arrow.textContent = '▾';
+        summary.append(label, arrow);
+        const text = document.createElement('pre');
+        text.textContent = p.text || '';
+        row.append(summary, text);
+        box.append(row);
+      }
+    }
+
+    // ---------- 测试记录（localStorage） ----------
+    let tests = [];
+    try { tests = JSON.parse(localStorage.getItem('ailab_tests') || '[]'); } catch { tests = []; }
+    let currentTestId = null;
+
+    function saveTests() { localStorage.setItem('ailab_tests', JSON.stringify(tests)); renderHist(); }
+    function findTest(id) { return tests.find((t) => t.id === id) || null; }
+    function fmtTime(ts) {
+      const d = new Date(ts);
+      const p = (n) => String(n).padStart(2, '0');
+      return `${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+
+    // ---------- 相机（正方形取景） ----------
+    function toSquare(dataUrl) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const side = Math.min(img.width, img.height);
+          const cv = document.createElement('canvas');
+          cv.width = side; cv.height = side;
+          cv.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, side, side);
+          resolve(cv.toDataURL('image/jpeg', 0.86));
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+      });
+    }
+
+    function setupCam({ onShot, stageId, fallbackId, shutterId, albumId, fileId }) {
+      const stage = $(stageId), fallback = $(fallbackId);
+      const video = stage.querySelector('.cam-video');
+      const shot = stage.querySelector('.cam-shot');
+      const canvas = stage.querySelector('.cam-canvas');
+      const shutter = $(shutterId), album = $(albumId), file = $(fileId);
+      let mode = 'off';
+      let dataUrl = null;
+      let offNote = '';
+
+      function setMode(m) {
+        mode = m;
+        stage.classList.toggle('is-off', m === 'off');
+        video.hidden = m !== 'live';
+        shot.hidden = m !== 'shot';
+        shutter.textContent = m === 'shot' ? '重拍' : '拍照';
+      }
+
+      async function goLive() {
+        if (!camSupported()) { setMode('off'); offNote = '这台设备打不开相机，可以从相册选一张。'; fallback.textContent = offNote; setMode('off'); return; }
+        try { await camStart(video); setMode('live'); }
+        catch { setMode('off'); offNote = '相机打不开，可以从相册选一张。'; fallback.textContent = offNote; setMode('off'); }
+      }
+
+      async function useShot(dUrl) {
+        dataUrl = dUrl;
+        shot.src = dUrl;
+        setMode('shot');
+        onShot?.(dUrl);
+      }
+
+      shutter.addEventListener('click', async () => {
+        if (mode === 'shot') { await goLive(); return; }
+        if (mode !== 'live') { await goLive(); return; }
+        try { await useShot(camCapture(video, canvas, 1)); }
+        catch { }
+      });
+
+      album.addEventListener('click', () => file.click());
+      file.addEventListener('change', async (e) => {
+        const f = e.target.files?.[0];
+        e.target.value = '';
+        if (!f) return;
+        try { await useShot(await toSquare(await camReadFile(f))); }
+        catch { }
+      });
+
+      return {
+        start() {
+          if (mode === 'shot' || mode === 'live') return;
+          goLive();
+        },
+        reset() { dataUrl = null; setMode('off'); },
+        get dataUrl() { return dataUrl; },
+        get mode() { return mode; },
+      };
+    }
+
+    const RIG = setupCam({
+      stageId: 'r-stage', fallbackId: 'r-fallback',
+      shutterId: 'r-shutter', albumId: 'r-album', fileId: 'r-file',
+      onShot: (dUrl) => {
+        const rec = { id: Date.now().toString(36), ts: Date.now(), photo: dUrl, food: '', confidence: '', trigger: '', character: 'greedy', taste: null };
+        tests.unshift(rec);
+        currentTestId = rec.id;
+        saveTests();
+        runRecognize(dUrl);
+      },
+    });
+
+    // ---------- 视图切换 ----------
+    function setActiveSide(button) {
+      document.querySelectorAll('.side-item, .hist-item').forEach((el) => el.classList.remove('is-active'));
+      button?.classList.add('is-active');
+    }
+
+    function showNewTest() {
+      setActiveSide($('new-test'));
+      $('view-workspace').hidden = false;
+      $('view-detail').hidden = true;
+      currentTestId = null;
+      RIG.reset();
+      $('r-out').innerHTML = '<p class="out-empty">拍一张照片，识别食物名称。</p>';
+      $('t-out').innerHTML = '<p class="out-empty">品鉴感言和热量估算会出现在这里。</p>';
+      $('t-status').hidden = true;
+      $('t-name').value = '';
+      $('t-name-hint').textContent = '';
+      $('t-trigger').value = '';
+      $('t-character').value = 'greedy';
+      RIG.start();
+    }
+
+    function showTest(id) {
+      const rec = findTest(id);
+      if (!rec) return;
+      setActiveSide(document.querySelector(`[data-test-id="${id}"]`));
+      $('view-workspace').hidden = true;
+      $('view-detail').hidden = false;
+      camStop();
+      renderDetail(rec);
+    }
+
+    // ---------- 左侧列表 ----------
+    function renderHist() {
+      const ul = $('hist-list');
+      $('hist-count').textContent = `(${tests.length})`;
+      ul.innerHTML = '';
+      if (!tests.length) {
+        const li = document.createElement('li');
+        li.className = 'hist-empty';
+        li.id = 'hist-empty';
+        li.textContent = '还没有测试。';
+        ul.append(li);
+        return;
+      }
+      for (const t of tests) {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.className = 'hist-item' + (t.id === currentTestId ? ' is-active' : '');
+        btn.dataset.testId = t.id;
+        btn.setAttribute('aria-label', '查看这条测试');
+        const thumb = document.createElement('img');
+        thumb.className = 'thumb';
+        thumb.src = t.photo;
+        thumb.alt = '';
+        const info = document.createElement('span');
+        info.className = 'info';
+        const name = document.createElement('span');
+        name.className = 'name' + (t.food ? '' : ' is-none');
+        name.textContent = t.food || (t.taste ? t.taste.food : '未识别');
+        const time = document.createElement('span');
+        time.className = 'time';
+        time.textContent = fmtTime(t.ts);
+        info.append(name, time);
+        btn.append(thumb, info);
+        li.append(btn);
+        ul.append(li);
+        btn.addEventListener('click', () => showTest(t.id));
+      }
+    }
+
+    // ---------- 链路一：识图 ----------
+    function submit(btn, fn) {
+      btn.disabled = true;
+      const old = btn.textContent;
+      btn.textContent = '请求中…';
+      Promise.resolve(fn()).finally(() => { btn.disabled = false; btn.textContent = old; });
+    }
+
+    function resultPhoto() {
+      const img = document.createElement('img');
+      img.className = 'result-photo';
+      img.src = RIG.dataUrl || '';
+      img.alt = '拍摄的食物照片';
+      return img;
+    }
+
+    function renderRecognizeOut(data) {
+      const out = $('r-out');
+      const err = data.error || data.networkError;
+      if (err) { out.innerHTML = '<div class="err-box">' + esc(err) + '</div>'; return; }
+      out.innerHTML = '';
+      const card = document.createElement('div');
+      if (RIG.dataUrl) card.append(resultPhoto());
+      const name = document.createElement('p');
+      name.className = 'food-name';
+      name.textContent = data.food || '没认出来';
+      const conf = document.createElement('p');
+      conf.className = 'conf-line';
+      conf.textContent = (data.mock ? 'mock · ' : '') + 'confidence ' + (data.confidence || '—');
+      card.append(name, conf, rawBlock(data));
+      out.append(card);
+      if (data.food) {
+        $('t-name').value = data.food;
+        $('t-name-hint').textContent = '已自动填入';
+        const rec = findTest(currentTestId);
+        if (rec) { rec.food = data.food; rec.confidence = data.confidence || ''; saveTests(); }
+      }
+    }
+
+    async function runRecognize(dUrl) {
+      const out = $('r-out');
+      out.innerHTML = '<p class="out-empty">识别中…</p>';
+      const { networkError, data } = await callApi('/api/ai/recognize', { image: dUrl });
+      renderRecognizeOut({ ...(data ?? {}), networkError });
+    }
+
+    // ---------- 链路二：品鉴 ----------
+    function renderTasteOut(data) {
+      const out = $('t-out');
+      const err = data.error || data.networkError;
+      if (err) { out.innerHTML = '<div class="err-box">' + esc(err) + '</div>'; return; }
+      out.innerHTML = '';
+      // 热量是主角
+      const kcalLabel = document.createElement('span');
+      kcalLabel.className = 'kcal-label';
+      kcalLabel.textContent = '约消化热量' + (data.mock ? ' · mock' : '');
+      const kcalRow = document.createElement('div');
+      kcalRow.className = 'kcal-row';
+      const num = document.createElement('span');
+      num.className = 'kcal-num';
+      num.textContent = data.calories != null ? String(data.calories) : '—';
+      const unit = document.createElement('span');
+      unit.className = 'kcal-unit';
+      unit.textContent = data.calories != null ? 'kcal' : '';
+      kcalRow.append(num, unit);
+      // 次要信息收敛成两枚小 chip
+      const meta = document.createElement('div');
+      meta.className = 'out-meta';
+      meta.innerHTML = `
+        <span class="meta-chip">相当于吃下 ${esc(data.equivalent || '—')}</span>`;
+      const note = document.createElement('p');
+      note.className = 'snake-note';
+      note.textContent = data.note || '（没有返回品鉴感言）';
+      out.append(kcalLabel, kcalRow, meta, note, rawBlock(data));
+      // 写回记录
+      const rec = findTest(currentTestId);
+      if (rec) {
+        rec.trigger = $('t-trigger').value.trim();
+        rec.character = $('t-character').value;
+        rec.taste = { food: data.food, calories: data.calories, equivalent: data.equivalent, note: data.note, confidence: data.confidence };
+        saveTests();
+      }
+    }
+
+    $('t-go').addEventListener('click', () => submit($('t-go'), async () => {
+      const food = $('t-name').value.trim();
+      const trigger = $('t-trigger').value.trim();
+      const status = $('t-status');
+      if (!food || !trigger) { status.textContent = '名称和不吃的理由都要填'; status.hidden = false; return; }
+      if (!RIG.dataUrl) { status.textContent = '先在左侧拍一张'; status.hidden = false; return; }
+      status.hidden = true;
+      $('t-out').innerHTML = '<p class="out-empty">品鉴中…</p>';
+      const { networkError, data } = await callApi('/api/ai/taste', {
+        image: RIG.dataUrl,
+        food, trigger,
+        persona: { character: $('t-character').value },
+      });
+      renderTasteOut({ ...(data ?? {}), networkError });
+    }));
+
+    // ---------- 历史详情 ----------
+    function renderDetail(rec) {
+      const box = $('detail');
+      box.innerHTML = '';
+
+      const head = document.createElement('div');
+      head.className = 'detail-head';
+      const time = document.createElement('span');
+      time.className = 'd-time';
+      time.textContent = fmtTime(rec.ts);
+      const del = document.createElement('button');
+      del.className = 'btn is-ghost is-small is-danger';
+      del.textContent = '删除';
+      del.addEventListener('click', () => {
+        if (!confirm('删除这条测试记录？')) return;
+        tests = tests.filter((t) => t.id !== rec.id);
+        saveTests();
+        showNewTest();
+      });
+      head.append(time, del);
+
+      const photo = document.createElement('img');
+      photo.className = 'result-photo';
+      photo.src = rec.photo;
+      photo.alt = '拍摄的食物照片';
+
+      const sec1 = document.createElement('div');
+      sec1.className = 'detail-sec';
+      const t1 = document.createElement('p');
+      t1.className = 'detail-sec-title';
+      t1.textContent = '识别';
+      const name = document.createElement('p');
+      name.className = 'food-name';
+      name.textContent = rec.food || '未识别';
+      const conf = document.createElement('p');
+      conf.className = 'conf-line';
+      conf.textContent = 'confidence ' + (rec.confidence || '—');
+      sec1.append(t1, name, conf, rawBlock({ food: rec.food, confidence: rec.confidence, photo: '[dataURL 已省略]' }));
+
+      const sec2 = document.createElement('div');
+      sec2.className = 'detail-sec';
+      const t2 = document.createElement('p');
+      t2.className = 'detail-sec-title';
+      t2.textContent = '品鉴';
+      if (rec.taste) {
+        const kcalLabel = document.createElement('span');
+        kcalLabel.className = 'kcal-label';
+        kcalLabel.textContent = '约消化热量';
+        const kcalRow = document.createElement('div');
+        kcalRow.className = 'kcal-row';
+        const num = document.createElement('span');
+        num.className = 'kcal-num';
+        num.textContent = rec.taste.calories != null ? String(rec.taste.calories) : '—';
+        const unit = document.createElement('span');
+        unit.className = 'kcal-unit';
+        unit.textContent = rec.taste.calories != null ? 'kcal' : '';
+        kcalRow.append(num, unit);
+        const meta = document.createElement('div');
+        meta.className = 'out-meta';
+        meta.innerHTML = `
+          <span class="meta-chip">相当于吃下 ${esc(rec.taste.equivalent || '—')}</span>`;
+        const note = document.createElement('p');
+        note.className = 'snake-note';
+        note.textContent = rec.taste.note || '';
+        const ctx = document.createElement('p');
+        ctx.className = 'status-note';
+        const charName = { greedy: '贪吃蛇', mamba: '曼巴蛇', beauty: '美女蛇' }[rec.character] || '贪吃蛇';
+        ctx.textContent = '不吃的理由：' + (rec.trigger || '—') + ' ｜ 蛇形象：' + charName;
+        sec2.append(t2, kcalLabel, kcalRow, meta, note, ctx, rawBlock(rec.taste));
+      } else {
+        const p = document.createElement('p');
+        p.className = 'out-empty';
+        p.textContent = '这条还没做品鉴。';
+        sec2.append(t2, p);
+      }
+
+      box.append(head, photo, sec1, sec2);
+    }
+
+    // ---------- 渲染辅助 ----------
+    function rawBlock(data) {
+      const det = document.createElement('details');
+      det.className = 'raw-block';
+      det.innerHTML = '<summary>原始 JSON</summary>';
+      const pre = document.createElement('pre');
+      pre.textContent = JSON.stringify(data, null, 2);
+      det.append(pre);
+      return det;
+    }
+
+    // ---------- 请求日志 ----------
+    function logRequest(path, status, ms) {
+      const li = document.createElement('li');
+      li.className = 'log-item';
+      li.innerHTML = '<span class="st ' + (status < 400 ? 'ok' : 'bad') + '">' + status + '</span><span>' + esc(path) + '</span><span class="ms">' + ms + ' ms</span>';
+      $('log-list').prepend(li);
+      const empty = $('log-empty');
+      if (empty) empty.remove();
+    }
+
+    $('log-clear').addEventListener('click', () => {
+      $('log-list').innerHTML = '<li class="log-empty" id="log-empty">还没有请求。</li>';
+    });
+
+    // ---------- 启动 ----------
+    $('new-test').addEventListener('click', showNewTest);
+    renderHist();
+    showNewTest();
+  </script>
+</body>
+</html>
