@@ -1,3 +1,10 @@
 node_modules/
 .DS_Store
 js/config.local.js
+server/config.local.json
+.figma-mcp/
+
+# Downloaded V3 segmentation model and local inspection output
+devlog/v3/app/vendor/models/u2net.onnx
+devlog/v3/app/vendor/models/*.download
+devlog/v3/screens-inspect/

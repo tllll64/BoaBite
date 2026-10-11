@@ -1,0 +1,11 @@
+{
+  "//": "复制本文件为 config.local.json 并填入真实配置（config.local.json 不入 git）。环境变量 BOABITE_* 优先级更高。视觉走独立的 Qwen 配置：聊天可继续用 DeepSeek。注意：实测你提供的 Key 是 PackyAPI 中转站的（分组 bailian），不是官方 DashScope Key——用它时 baseURL 要写成 https://www.packyapi.ai/v1，模型名用中转站提供的 qwen3-vl-flash（视觉）与 qwen3.5-plus（聊天）。官方 DashScope 用法：visionBaseURL 写 https://dashscope.aliyuncs.com/compatible-mode/v1，visionModel 写 qwen-vl-plus。",
+  "apiKey": "sk-xxxxxxxxxxxxxxxx",
+  "baseURL": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "visionBaseURL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "visionApiKey": "sk-xxxxxxxxxxxxxxxx",
+  "visionModel": "qwen-vl-plus",
+  "port": 8787,
+  "mock": false
+}

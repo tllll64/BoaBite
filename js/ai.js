@@ -1,5 +1,6 @@
 import { chatJSON, LLMError } from './llm.js';
 import { FEED_ANALYSIS_PROMPT, FEED_ANALYSIS_OUTPUT_FORMAT } from './prompts.js';
+import { SNAKE_PERSONAS, SNAKE_OUTPUTS } from './snake-personas.js';
 import { TONES } from './config.js';
 
 // 所有回应都必须由模型生成，没有演示模式兜底。
@@ -15,8 +16,12 @@ function requireKey({ apiKey, baseURL, model }) {
 export function buildPersona(persona = {}) {
   const lines = [];
   if (persona.name?.trim()) lines.push(`你的名字是「${persona.name.trim()}」。用户这样叫你，你可以自称这个名字。`);
-  const tone = TONES.find((t) => t.id === persona.tone) ?? TONES[0];
-  lines.push(`语气：${tone.instruction}`);
+  if (SNAKE_PERSONAS[persona.character]) {
+    lines.push(SNAKE_PERSONAS[persona.character], SNAKE_OUTPUTS[persona.character].replaceAll('note', 'snake_note'));
+  } else {
+    const tone = TONES.find((t) => t.id === persona.tone) ?? TONES[0];
+    lines.push(`语气：${tone.instruction}`);
+  }
   if (persona.extra?.trim()) lines.push(`用户额外给你的设定：${persona.extra.trim()}`);
   return lines.join('\n');
 }
