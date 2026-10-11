@@ -4,84 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#FFF9F2">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%238FD694'/%3E%3Ccircle cx='38' cy='44' r='7' fill='%232b2b2b'/%3E%3Ccircle cx='62' cy='44' r='7' fill='%232b2b2b'/%3E%3Cpath d='M35 60 q15 14 30 0' stroke='%232b2b2b' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>BoaBite</title>
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=52">
 </head>
 <body>
 
   <main class="phone">
 
-    <!-- ================= 首页 ================= -->
+    <!-- ================= 首页（V3 设计稿 · node 1199:2246） ================= -->
     <section class="view view-home" id="viewHome">
-      <img class="statusbar" src="design/assets/statusbar-full.png" alt="">
 
-      <!-- 顶部品牌区：素材字标 + 素材图标（幽灵 / 帽子） -->
-      <header class="brand">
-        <img class="brand-wordmark" src="design/assets/hm-wordmark.png" alt="BoaBite">
-        <div class="brand-actions">
-          <button class="icon-btn" id="btnPersona" aria-label="蛇的人设">
-            <img src="design/assets/hm-ghost-icon.png" alt="">
+      <!-- 整屏背景图 -->
+      <div class="hm-bg">
+        <img src="design/assets/v3/imgBackground1.png" alt="">
+      </div>
+
+      <!-- 状态栏（设计稿：8:00 + 信号/连接/电量 SVG） -->
+      <div class="hm-status">
+        <span class="hm-time">8:00</span>
+        <span class="hm-signal"><img src="design/assets/v3/imgSignal.svg" alt=""></span>
+        <span class="hm-conn"><img src="design/assets/v3/imgConnection.svg" alt=""></span>
+        <span class="hm-batt"><img src="design/assets/v3/imgBattery.svg" alt=""></span>
+      </div>
+
+      <!-- 顶部品牌区：BoaBite 文字标 + 两个图标按钮 -->
+      <header class="hm-brand">
+        <img class="hm-logo" src="design/assets/home-logo.png" alt="BoaBite">
+        <div class="hm-actions">
+          <button class="hm-icon-btn" id="btnPersona" aria-label="蛇的人设">
+            <img src="design/assets/v3/imgFrame2147225874.svg" alt="">
           </button>
-          <button class="icon-btn" id="btnCalendar" aria-label="投喂日记">
-            <img src="design/assets/hm-hat.png" alt="">
+          <button class="hm-icon-btn" id="btnCalendar" aria-label="投喂日记">
+            <img src="design/assets/v3/imgFrame2147225873.svg" alt="">
           </button>
         </div>
       </header>
 
-      <!-- 蛇的说话气泡（框 + 左上角眼睛点缀素材叠加） -->
-      <div class="bubble-wrap">
-        <div class="hm-bubble">
-          <img class="hm-bubble-eyes" src="design/assets/bubble-eyes.png" alt="">
-          <img src="design/assets/bubble-frame.png" alt="" class="hm-bubble-bg">
-          <span class="bubble-text" id="bubbleText"></span>
-        </div>
+      <!-- 蛇的说话气泡（素材底图 + 眼睛点缀 + 前端文字） -->
+      <div class="hm-bubble">
+        <img class="hm-bubble-bg" src="design/assets/v3/imgVector59.svg" alt="">
+        <img class="hm-bubble-die" src="design/assets/die.png" alt="">
+        <span class="hm-bubble-text" id="bubbleText">太饿了，你不吃的可以给我喂点</span>
       </div>
 
-      <!-- 蛇形态区（页面主体） -->
-      <section class="snake-stage">
-        <div class="snake-holder" id="snakeHolder"></div>
-      </section>
-
-      <!-- 日期标签 + 数据栏（未投喂时隐藏） -->
-      <section class="today" id="todayPanel">
-        <div class="date-pill" id="datePill"></div>
-        <div class="stat-card">
-          <div class="stat">
-            <b id="feedCount">0</b><span>次投喂</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat">
-            <b id="feedKcal">0</b><span>累计 kcal</span>
-          </div>
-        </div>
-      </section>
+      <!-- 蛇形态区：设计稿 Group 26 整体素材（蛇身 + 颤抖线 + 口水 + 面部细节，一体导出） -->
+      <div class="hm-snake" id="snakeHolder">
+        <img class="hs-whole" src="design/assets/v3/snake.png" srcset="design/assets/v3/snake@2x.png 2x" alt="蛇">
+      </div>
 
       <!-- 投喂按钮 -->
-      <button class="feed-btn" id="feedBtn">🖐 我要投喂</button>
+      <button class="hm-feed" id="feedBtn" aria-label="我要投喂">
+        <img src="design/assets/home-feed.png" alt="我要投喂">
+      </button>
 
-      <img class="homebar" src="design/assets/home-indicator-black.png" alt="">
+      <div class="hm-homebar"></div>
     </section>
 
     <!-- ================= 相机拍摄页（节点 1→2） ================= -->
     <section class="view view-camera" id="viewCamera">
-      <img class="statusbar" src="design/assets/statusbar-full.png" alt="">
+      <img class="statusbar" src="design/assets/camera-statusbar-white.png" alt="">
 
       <video class="cam-video" id="camVideo" autoplay playsinline muted></video>
 
-      <!-- 无摄像头画面时的演示背景（正式环境被真实取景覆盖） -->
-      <img class="cam-demo-bg" src="design/assets/cam-demo-food.png" alt="">
-
-      <!-- 快门后的照片层：与取景同位同尺寸，呼吸动画 -->
+      <!-- 快门后的照片层：与取景同位同尺寸，静态定格 -->
       <img class="cam-shot" id="camShot" alt="" hidden>
+      <div class="analysis-dots" aria-hidden="true"><div class="analysis-scan"></div></div>
+      <div class="analysis-paper" aria-hidden="true">
+        <img src="design/assets/paper-bg.png" alt="">
+        <img src="design/assets/paper-bg.png" alt="">
+        <img src="design/assets/paper-bg.png" alt="">
+      </div>
+      <img class="analysis-yellow" src="design/assets/snake-ring.png" alt="">
+      <img class="analysis-subject" id="analysisSubject" alt="">
 
       <!-- 蛇嘴取景框 overlay -->
       <div class="cam-overlay">
-        <img src="design/assets/snake-mouth.png" alt="蛇嘴取景框">
+        <img src="design/assets/camera-mouth.png" alt="蛇嘴取景框">
       </div>
 
       <!-- 顶部固定气泡 -->
       <div class="cam-bubble">
-        <img src="design/assets/bubble.png" alt="" class="bubble-bg">
+        <img src="design/assets/camera-bubble.png" alt="" class="bubble-bg">
         <span>喂我嘴里就好～</span>
       </div>
 
@@ -103,6 +107,10 @@
 
     <!-- ================= 照片确认页（节点 3） ================= -->
     <section class="view view-confirm" id="viewConfirm">
+      <div class="cf-name-bubble">
+        <img src="design/assets/camera-bubble.png" alt="">
+        <input id="cfFoodName" type="text" maxlength="40" aria-label="物体名称，可编辑" placeholder="请输入物体名称" autocomplete="off" enterkeyhint="done">
+      </div>
       <img class="statusbar" src="design/assets/statusbar-full.png" alt="">
 
       <!-- 纸质纹理背景 -->
@@ -140,14 +148,14 @@
 
       <!-- 顶部气泡：投食状 -->
       <div class="rs-bubble">
-        <img src="design/assets/bubble.png" alt="" class="bubble-bg">
+        <img src="design/assets/pledge-bubble.png" alt="" class="bubble-bg">
         <span>蛇嘴吐不出美食，请立下投食状</span>
       </div>
 
       <!-- 照片层 + 蛇衔圆环：与确认页同构原位 -->
       <img class="cf-photo-layer card" id="plPhotoLayer" alt="蛇嘴里的食物">
       <div class="cf-ring-wrap">
-        <img class="cf-ring" src="design/assets/snake-ring.png" alt="">
+        <img class="cf-ring" src="design/assets/pledge-snake.png" alt="">
       </div>
 
       <div class="rs-body">
@@ -157,8 +165,8 @@
         </div>
 
         <div class="rs-actions">
-          <button class="rs-btn rs-btn-ghost" id="plRegret">反悔了</button>
-          <button class="rs-btn rs-btn-dark" id="plFeed">马上喂</button>
+          <button class="rs-btn rs-btn-ghost" id="plRegret" aria-label="反悔了"><img src="design/assets/pledge-regret.png" alt="反悔了"></button>
+          <button class="rs-btn rs-btn-dark" id="plFeed" aria-label="马上喂"><img src="design/assets/pledge-feed.png" alt="马上喂"></button>
         </div>
       </div>
 
@@ -172,11 +180,14 @@
       <!-- 纸质纹理背景 -->
       <img class="cf-paper" src="design/assets/paper-bg.png" alt="">
 
+      <button class="el-back" id="elBack" aria-label="返回投食状"><img src="design/assets/icon-back.png?v=2" alt="">
+      </button>
+
       <div class="el-box">
         <div class="el-canvas" id="elCanvas">
-          <!-- 蛇吞食物动画（程序绘制原型）：食物掉进蛇嘴，蛇身鼓包 -->
+          <img class="el-illustration" src="design/assets/taste-loading.png" alt="蛇抱着食物">
         </div>
-        <p class="el-text">品鉴美食中...</p>
+        <p class="el-text">把它吞进肚子里...</p>
       </div>
 
       <img class="homebar" src="design/assets/home-indicator-black.png" alt="">
@@ -189,56 +200,23 @@
       <!-- 纸质纹理背景 -->
       <img class="cf-paper" src="design/assets/paper-bg.png" alt="">
 
-      <!-- 右上角分享按钮 -->
-      <button class="share-btn" id="btnShare" aria-label="分享">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 15V4M12 4l-4 4M12 4l4 4"/>
-          <path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>
-        </svg>
+      <button class="el-back" id="resultBack" aria-label="返回首页"><img src="design/assets/icon-back.png?v=2" alt="">
       </button>
-
-      <!-- 蛇插画区：横趴蛇 + 腹中食物 -->
-      <div class="tk-snake" id="tkSnake"></div>
-
-      <!-- 蛇嘴表情图标 -->
-      <div class="tk-face" id="tkFace">
-        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-          <g class="tk-face-happy">
-            <circle cx="21" cy="24" r="3.2" fill="#1f1f1f"/>
-            <circle cx="39" cy="24" r="3.2" fill="#1f1f1f"/>
-            <rect x="20" y="34" width="20" height="10" rx="4" fill="#1f1f1f"/>
-            <path d="M24 36.5 v5 M30 36.5 v5 M36 36.5 v5" stroke="#fff" stroke-width="1.6"/>
-          </g>
-          <g class="tk-face-stuffed" style="display:none">
-            <path d="M17.5 22 l7 7 M24.5 22 l-7 7" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round"/>
-            <path d="M35.5 22 l7 7 M42.5 22 l-7 7" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round"/>
-            <rect x="19" y="35" width="22" height="11" rx="5" fill="#1f1f1f"/>
-            <path d="M24 37.5 v6 M29.5 37.5 v6 M35 37.5 v6 M40.5 37.5 v6" stroke="#fff" stroke-width="1.6"/>
-          </g>
-        </svg>
+      <button class="share-btn" id="btnShare" aria-label="分享"><img src="design/assets/result-share.png" alt=""></button>
+      <div class="tk-snake" id="tkSnake">
+        <svg viewBox="0 0 730 162" aria-label="平躺的蛇"><path d="M22 143 Q48 128 141 126 Q239 120 355 128 Q493 138 558 110 Q610 90 657 110 Q686 122 686 137 Q663 148 611 146 L22 146 Z" fill="#ffdb94" stroke="#000" stroke-width="5" stroke-linejoin="round"/><path d="M618 120 q10 12 21 5 M678 137 l-13 -6 q-10 4 0 10 M685 94 q-13 -17 -5 -27 q18 -11 24 7 q4 13 -19 20" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/></svg>
       </div>
-
-      <!-- 白色卡片区 -->
+      <img class="tk-face" id="tkFace" src="design/assets/result-face.png" alt="蛇的表情">
       <div class="tk-card">
-        <div class="tk-title"><i>◇</i><b>品鉴感言</b><i>——◇</i></div>
-        <div class="tk-review">
-          <span id="tkReview"></span>
-          <div class="tk-sticker" id="tkSticker"></div>
-        </div>
+        <div class="tk-handle" aria-hidden="true"></div>
+        <div class="tk-review"><img src="design/assets/result-output.png" alt="品鉴感言"><p id="tkReview"></p></div>
         <div class="tk-stats">
-          <div class="tk-stat">
-            <span class="tk-label">消化热量</span>
-            <div class="tk-value"><b id="tkKcal"></b><em>kcal</em></div>
-          </div>
-          <div class="tk-divider"></div>
-          <div class="tk-stat">
-            <span class="tk-label">相当于吃下</span>
-            <div class="tk-value"><span class="tk-emoji">🐰</span><b id="tkEq"></b></div>
-          </div>
+          <div class="tk-stat"><span class="tk-label">约消化热量</span><div class="tk-value"><b id="tkKcal"></b><em>kcal</em></div></div>
+          <div class="tk-stat"><span class="tk-label">相当于吃下</span><div class="tk-value"><span class="tk-emoji" id="tkAnimalEmoji"></span><b id="tkEq"></b></div></div>
         </div>
         <div class="tk-actions">
-          <button class="rs-btn rs-btn-ghost" id="tkDone">喂完了</button>
-          <button class="rs-btn rs-btn-dark" id="tkMore">继续喂</button>
+          <button class="rs-btn" id="tkDone" aria-label="喂完了"><img src="design/assets/result-done.png" alt="喂完了"></button>
+          <button class="rs-btn" id="tkMore" aria-label="继续喂"><img src="design/assets/result-continue.png" alt="继续喂"></button>
         </div>
       </div>
 
@@ -250,20 +228,10 @@
 
   </main>
 
-  <!-- PRD 侧栏（宽屏工作台模式显示；内容实时读取 PRD.md） -->
-  <aside class="prd-panel" id="prdPanel">
-    <header class="prd-head">
-      <span class="prd-title">📄 PRD</span>
-      <span class="prd-hint">要改哪里，直接在聊天里说</span>
-    </header>
-    <div class="md" id="prdContent"><p>PRD 加载中…</p></div>
-  </aside>
-
   <!-- 隐藏的文件选择（相册 / 降级拍摄） -->
   <input type="file" id="albumInput" accept="image/*" hidden>
   <input type="file" id="takeInput" accept="image/*" capture="environment" hidden>
 
-  <script src="app.js?v=13"></script>
-  <script src="prd.js?v=3"></script>
+  <script src="app.js?v=31"></script>
 </body>
 </html>

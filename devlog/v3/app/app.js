@@ -37,62 +37,11 @@ function showView(name) {
   });
 }
 
-/* ================= 蛇形态（程序绘制占位，素材到位后可整体替换） ================= */
+/* ================= 蛇形态（V3 设计稿为静态扁平插画，渲染由 HTML 素材完成） ================= */
 
-const SNAKE_PATH =
-  "M160 64 C215 64 252 100 252 148 C252 200 205 236 152 236 " +
-  "C101 236 64 200 64 152 C64 108 98 78 142 78 " +
-  "C176 78 200 100 200 130 C200 156 180 170 156 170 " +
-  "C138 170 126 158 126 142";
-
-function renderSnake(count) {
-  const w = 30 + count * 10;
-  const hr = w * 0.62 + 14;
-  const full = count >= MAX_FEED;
-
-  const eyeY = 44;
-  const eyeDX = Math.max(12, hr * 0.44);
-  let eyes;
-  if (full) {
-    eyes = `
-      <path d="M${160 - eyeDX - 5} ${eyeY} q5 -6 10 0" stroke="#2b2b2b" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-      <path d="M${160 + eyeDX - 5} ${eyeY} q5 -6 10 0" stroke="#2b2b2b" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
-  } else if (count === 0) {
-    eyes = `
-      <circle cx="${160 - eyeDX}" cy="${eyeY}" r="6.5" fill="#fff"/>
-      <circle cx="${160 + eyeDX}" cy="${eyeY}" r="6.5" fill="#fff"/>
-      <circle cx="${160 - eyeDX + 1}" cy="${eyeY + 1.5}" r="3.4" fill="#2b2b2b"/>
-      <circle cx="${160 + eyeDX + 1}" cy="${eyeY + 1.5}" r="3.4" fill="#2b2b2b"/>`;
-  } else {
-    eyes = `
-      <circle cx="${160 - eyeDX}" cy="${eyeY}" r="6" fill="#fff"/>
-      <circle cx="${160 + eyeDX}" cy="${eyeY}" r="6" fill="#fff"/>
-      <circle cx="${160 - eyeDX}" cy="${eyeY}" r="3" fill="#2b2b2b"/>
-      <circle cx="${160 + eyeDX}" cy="${eyeY}" r="3" fill="#2b2b2b"/>`;
-  }
-
-  const tongue = full
-    ? ""
-    : `<path d="M160 ${50 - hr} v-9 m0 0 l-4 -4 m4 4 l4 -4" stroke="#FF6B6B" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-
-  const mouth = full
-    ? `<path d="M150 66 q10 8 20 0" stroke="#2b2b2b" stroke-width="2.4" fill="none" stroke-linecap="round"/>`
-    : `<path d="M152 64 q8 6 16 0" stroke="#2b2b2b" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-
-  document.getElementById("snakeHolder").innerHTML = `
-    <svg class="snake-svg" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="160" cy="256" rx="${w * 1.15 + 30}" ry="13" fill="#5b5348" opacity="0.08"/>
-      <path d="${SNAKE_PATH}" fill="none" stroke="#8FD694" stroke-width="${w}" stroke-linecap="round"/>
-      <path d="${SNAKE_PATH}" fill="none" stroke="#4E9F5C" stroke-width="${w * 0.56}" stroke-linecap="butt"
-            stroke-dasharray="13 26" opacity="0.32"/>
-      <circle cx="160" cy="50" r="${hr}" fill="#8FD694"/>
-      <circle cx="160" cy="${50 + hr * 0.62}" r="${hr * 0.8}" fill="#A9E4AD" opacity="0.55"/>
-      ${eyes}
-      ${mouth}
-      <ellipse cx="${160 - hr * 0.72}" cy="${eyeY + 13}" rx="5.5" ry="3.6" fill="#FFB4A2" opacity="0.7"/>
-      <ellipse cx="${160 + hr * 0.72}" cy="${eyeY + 13}" rx="5.5" ry="3.6" fill="#FFB4A2" opacity="0.7"/>
-      ${tongue}
-    </svg>`;
+function renderSnake() {
+  // 设计稿蛇为静态素材（#snakeHolder 内的 .hs-* 已按坐标排布），无需程序绘制。
+  // 保留此函数仅作为状态变化钩子：投喂后触发吞咽动画。
 }
 
 /* ================= 气泡文案池（占位版，文案池由产品提供后替换） ================= */
@@ -157,30 +106,21 @@ function rotateBubble() {
   bubbleTimer = setInterval(rotateBubble, 8000);
 }
 
-/* ================= 数据栏 ================= */
+/* ================= 数据栏（V3 设计稿首页无数据栏，仅保留状态逻辑） ================= */
 
 function renderStats() {
-  const panel = document.getElementById("todayPanel");
-  if (state.count === 0) {
-    panel.classList.add("hidden");
-    return;
-  }
-  panel.classList.remove("hidden");
-  const d = new Date();
-  document.getElementById("datePill").textContent =
-    `今日记录 · ${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
-  document.getElementById("feedCount").textContent = state.count;
-  document.getElementById("feedKcal").textContent = state.kcal;
+  // V3 设计稿首页不再展示「今日记录 / 投喂次数 / kcal」数据栏，状态仍保留供气泡与记录使用。
 }
 
 function renderFeedBtn() {
   const btn = document.getElementById("feedBtn");
+  const label = btn.querySelector("span");
   if (state.count >= MAX_FEED) {
     btn.disabled = true;
-    btn.textContent = "今天吃饱啦，明天再来";
+    if (label) label.textContent = "今天吃饱啦，明天再来";
   } else {
     btn.disabled = false;
-    btn.textContent = "🖐 我要投喂";
+    if (label) label.textContent = "我要投喂";
   }
 }
 
@@ -199,26 +139,50 @@ const takeInput = document.getElementById("takeInput");
 let stream = null;
 let camLive = false;
 let photoData = null;
+let cameraRequest = 0;
+
+camVideo.addEventListener("playing", function () {
+  const activeStream = stream;
+  function showCameraOverlay() {
+    if (!activeStream || stream !== activeStream || camVideo.readyState < 2) return;
+    camLive = true;
+    document.getElementById("viewCamera").classList.add("camera-ready");
+  }
+  if (camVideo.requestVideoFrameCallback) {
+    camVideo.requestVideoFrameCallback(showCameraOverlay);
+  } else {
+    showCameraOverlay();
+  }
+});
 
 async function startCamera() {
+  cancelProcessing();
   stopCamera();
   camLive = false;
+  const request = cameraRequest;
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
 
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
+    const nextStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: { ideal: "environment" } },
       audio: false
     });
+    if (request !== cameraRequest) {
+      nextStream.getTracks().forEach(function (track) { track.stop(); });
+      return;
+    }
+    stream = nextStream;
     camVideo.srcObject = stream;
-    camLive = true;
   } catch (err) {
     console.warn("[BoaBite] getUserMedia failed:", err && err.name);
   }
 }
 
 function stopCamera() {
+  cameraRequest += 1;
+  document.getElementById("viewCamera").classList.remove("camera-ready");
+  camLive = false;
   if (stream) {
     stream.getTracks().forEach(function (t) { t.stop(); });
     stream = null;
@@ -278,35 +242,166 @@ function clearLoadTimers() {
   loadTimers = [];
 }
 
-/* 识别/品鉴：相机页原地呼吸（构图不变），约 3s 后进抠像确认页 */
-function runMockRecognize(mode) {
-  clearLoadTimers();
-  lastMode = mode || "card";
-  const shot = document.getElementById("camShot");
-  shot.classList.toggle("card", mode === "card");
-  shot.src = photoData || "";
-  shot.hidden = false;
-  processing = true;
+let analysisRequest = 0;
+let developmentAnimations = [];
 
-  loadTimers.push(setTimeout(function () {
-    processing = false;
-    shot.hidden = true;
-    shot.src = "";
-    pendingFood = MOCK_FOODS[Math.floor(Math.random() * MOCK_FOODS.length)];
-    pendingReview = REVIEWS[Math.floor(Math.random() * REVIEWS.length)];
+async function revealPaperSubject(src, request) {
+  const camera = document.getElementById("viewCamera");
+  const subject = document.getElementById("analysisSubject");
+  subject.src = src;
+  await subject.decode();
+  if (!processing || request !== analysisRequest) return;
+  camera.classList.add("developing");
+  const duration = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1700;
+  const options = { duration, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" };
+  const centers = ["15% 24%", "86% 66%", "28% 91%"];
+  developmentAnimations = Array.from(camera.querySelectorAll(".analysis-paper img"), (paper, i) =>
+    paper.animate([
+      { clipPath: `circle(0% at ${centers[i]})` },
+      { clipPath: `circle(145% at ${centers[i]})` }
+    ], options)
+  );
+  developmentAnimations.push(
+    camera.querySelector(".analysis-yellow").animate([{ opacity: 0 }, { opacity: 1 }], options),
+    subject.animate([{ opacity: 0 }, { opacity: 1 }], options)
+  );
+  // 先叠加气泡和面板，底层纸张与蛇头继续显影。
+  loadTimers.push(setTimeout(() => {
+    if (!processing || request !== analysisRequest) return;
+    document.getElementById("viewConfirm").classList.add("revealing", "active");
+  }, duration ? 400 : 0));
+  await Promise.allSettled(developmentAnimations.map(animation => animation.finished));
+}
+
+function clearDevelopment() {
+  const confirm = document.getElementById("viewConfirm");
+  if (confirm.classList.contains("revealing")) {
+    confirm.classList.remove("revealing", "active");
+  }
+  developmentAnimations.forEach(animation => animation.cancel());
+  developmentAnimations = [];
+  document.getElementById("viewCamera").classList.remove("developing");
+  document.getElementById("analysisSubject").removeAttribute("src");
+}
+
+
+async function recognizeSubject(image, signal) {
+  const base = location.port === "8787" ? "" : "http://127.0.0.1:8787";
+  const response = await fetch(base + "/api/ai/recognize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ image }),
+    signal
+  });
+  const data = await response.json();
+  if (!response.ok || data.error) throw new Error(data.error || "识别失败");
+  if (data.mock) throw new Error("识别服务当前为演示模式");
+  const name = typeof data.food === "string" ? data.food.trim() : "";
+  if (!name || name === "没认出来") throw new Error("未识别出名称");
+  return name;
+}
+
+let recognitionController = null;
+
+
+async function cropMouthSubject(src) {
+  const img = new Image();
+  img.src = src;
+  await img.decode();
+  const viewport = document.getElementById("viewCamera").getBoundingClientRect();
+  const mouth = document.querySelector(".cam-overlay img").getBoundingClientRect();
+  // 对应 object-fit: cover 的取景坐标，只分析蛇嘴内的区域。
+  const scale = Math.max(viewport.width / img.width, viewport.height / img.height);
+  const offsetX = (img.width * scale - viewport.width) / 2;
+  const offsetY = (img.height * scale - viewport.height) / 2;
+  const x = Math.max(0, (mouth.left - viewport.left + mouth.width * .06 + offsetX) / scale);
+  const y = Math.max(0, (mouth.top - viewport.top + mouth.height * .18 + offsetY) / scale);
+  const w = Math.min(img.width - x, mouth.width * .88 / scale);
+  const h = Math.min(img.height - y, mouth.height * .78 / scale);
+  if (w <= 0 || h <= 0) throw new Error("invalid-crop");
+  const cv = document.createElement("canvas");
+  const resize = Math.min(1, 1024 / Math.max(w, h));
+  cv.width = Math.max(1, Math.round(w * resize));
+  cv.height = Math.max(1, Math.round(h * resize));
+  cv.getContext("2d").drawImage(img, x, y, w, h, 0, 0, cv.width, cv.height);
+  return cv.toDataURL("image/jpeg", .92);
+}
+
+/* 定格 → 主体分割与名称识别 → 纸张显影 → 图片确认。 */
+async function runMockRecognize(mode) {
+  clearLoadTimers();
+  clearDevelopment();
+  if (recognitionController) recognitionController.abort();
+  recognitionController = new AbortController();
+  const signal = recognitionController.signal;
+  const request = ++analysisRequest;
+  lastMode = "cutout";
+  processing = true;
+  const camera = document.getElementById("viewCamera");
+  const shot = document.getElementById("camShot");
+  camera.classList.add("analyzing");
+  shot.classList.remove("card");
+  shot.onload = null;
+  shot.src = photoData;
+  shot.hidden = false;
+  try {
+    await shot.decode();
+    if (request !== analysisRequest) return;
+    camera.classList.add("captured");
+    stopCamera();
+    const cropped = await cropMouthSubject(photoData);
+    const { cutout } = await import("./food-cutout.js?v=2");
+    const [result, identified] = await Promise.all([
+      cutout(cropped),
+      recognizeSubject(cropped, signal).then(
+        name => ({ name }),
+        error => ({ error })
+      )
+    ]);
+    if (request !== analysisRequest) return;
+    if (result.coverage < .02) throw new Error("no-subject");
+    photoData = result.image;
     const layer = document.getElementById("cfPhotoLayer");
-    layer.className = "cf-photo-layer " + mode; // 与相机页同构：card / full
-    layer.src = photoData || "";
+    layer.className = "cf-photo-layer cutout";
+    layer.src = photoData;
+    await layer.decode();
+    if (request !== analysisRequest) return;
+    const sample = MOCK_FOODS[Math.floor(Math.random() * MOCK_FOODS.length)];
+    pendingFood = { ...sample, name: identified.name || "未识别出名称" };
+    document.getElementById("cfFoodName").value = identified.name || "";
+    if (identified.error) toast("名称识别暂不可用，请检查 AI Lab 后端连接");
+    pendingReview = REVIEWS[Math.floor(Math.random() * REVIEWS.length)];
+    await revealPaperSubject(photoData, request);
+    if (request !== analysisRequest) return;
+    processing = false;
+    document.getElementById("viewConfirm").classList.remove("revealing");
     showView("Confirm");
-  }, 3000));
+    // 让视图淡入完成后再清理底层，避免露出旧照片。
+    loadTimers.push(setTimeout(function () {
+      camera.classList.remove("analyzing");
+      clearDevelopment();
+    }, 300));
+  } catch (err) {
+    if (request !== analysisRequest) return;
+    cancelProcessing();
+    toast("这次没分离出主体，请重新拍摄");
+    startCamera();
+  }
 }
 
 function cancelProcessing() {
+  clearDevelopment();
+  if (recognitionController) recognitionController.abort();
+  recognitionController = null;
+  analysisRequest += 1;
+  document.getElementById("viewCamera").classList.remove("analyzing");
   clearLoadTimers();
   processing = false;
   const shot = document.getElementById("camShot");
+  shot.onload = null;
   shot.hidden = true;
   shot.src = "";
+  document.getElementById("viewCamera").classList.remove("captured");
 }
 
 /* 品鉴结果数据（快门时生成，✓ 确认后呈现） */
@@ -326,18 +421,50 @@ function showPledge() {
 }
 
 /* 品鉴加载动画（马上喂后）：食物落入蛇嘴 → 完毕后出品鉴结果 */
-function runTasteLoad() {
+let tasteController = null;
+async function runTasteLoad() {
   clearLoadTimers();
-  const canvas = document.getElementById("elCanvas");
-  canvas.innerHTML =
-    '<img class="food" src="' + (photoData || "") + '" alt="">' +
-    '<svg class="mouth" viewBox="0 0 130 60" xmlns="http://www.w3.org/2000/svg">' +
-    '<ellipse cx="65" cy="30" rx="58" ry="24" fill="#F0C878" stroke="#1f1f1f" stroke-width="3"/>' +
-    '<path d="M30 22 q6 -14 14 -6 M86 16 q8 -8 14 6" stroke="#1f1f1f" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
-    '</svg>';
+  if (tasteController) tasteController.abort();
+  const controller = new AbortController();
+  tasteController = controller;
+  const text = document.querySelector(".el-text");
+  text.textContent = "把它吞进肚子里...";
   showView("EatLoad");
-  loadTimers.push(setTimeout(showTasteResult, 2600));
+  loadTimers.push(setTimeout(() => { text.textContent = "吃完吧唧嘴..."; }, 3000));
+  loadTimers.push(setTimeout(() => { text.textContent = "想想怎么评价..."; }, 6000));
+  try {
+    const base = location.port === "8787" ? "" : "http://127.0.0.1:8787";
+    const response = await fetch(base + "/api/ai/taste", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: photoData, food: pendingFood.name, trigger: pendingReason }),
+      signal: controller.signal
+    });
+    const data = await response.json();
+    if (!response.ok || data.error || data.mock) throw new Error(data.error || "品鉴服务暂不可用");
+    if (tasteController !== controller) return;
+    pendingReview = data.note;
+    if (Number.isFinite(data.calories)) pendingFood.kcal = data.calories;
+    pendingFood.animalEmoji = data.animalEmoji;
+    pendingFood.animalCount = data.animalCount;
+    clearLoadTimers();
+    tasteController = null;
+    showTasteResult();
+  } catch (error) {
+    if (tasteController !== controller || controller.signal.aborted) return;
+    clearLoadTimers();
+    tasteController = null;
+    showView("Pledge");
+    toast(error instanceof TypeError ? "无法连接本地 AI 后端，请确认服务已启动" : "品鉴失败：" + error.message);
+  }
 }
+
+document.getElementById("elBack").addEventListener("click", () => {
+  if (tasteController) tasteController.abort();
+  tasteController = null;
+  clearLoadTimers();
+  showView("Pledge");
+});
 
 /* 品鉴结果页（r2）：蛇腹鼓包 + 感言 + 消化热量 + 相当于 */
 function showTasteResult() {
@@ -345,41 +472,12 @@ function showTasteResult() {
   document.getElementById("tkReview").textContent =
     pendingReview || "是" + food.name + "诶，这一口我替你扛了";
   document.getElementById("tkKcal").textContent = food.kcal;
-  const eq = food.kcal >= 450 ? "2只" : food.kcal >= 280 ? "1只" : "半只";
-  document.getElementById("tkEq").textContent = eq;
-  document.getElementById("tkSticker").textContent = "🐍";
-
-  // 蛇插画：横趴蛇 + 腹中鼓包（先显示食物，后消化）
-  document.getElementById("tkSnake").innerHTML = renderFlatSnake(!!photoData);
-  if (photoData) {
-    setTimeout(function () {
-      const belly = document.getElementById("tkBellyFood");
-      if (belly) belly.style.opacity = "0";
-      document.querySelector(".tk-face-happy").style.display = "";
-      document.querySelector(".tk-face-stuffed").style.display = "none";
-    }, 1800);
-    document.querySelector(".tk-face-happy").style.display = "none";
-    document.querySelector(".tk-face-stuffed").style.display = "";
-  }
+  document.getElementById("tkAnimalEmoji").textContent = food.animalEmoji || "";
+  document.getElementById("tkEq").textContent = Number.isFinite(food.animalCount) ? food.animalCount + "只" : "—";
   showView("Result");
 }
 
-/* 横趴蛇（程序绘制原型）：头部在右，腹中鼓包，可选嵌入食物 */
-function renderFlatSnake(withFood) {
-  const bodyY = 150;
-  const bumpH = withFood ? 86 : 64;
-  const belly = withFood
-    ? '<clipPath id="bellyClip"><path d="M80 190 Q196 ' + (190 - bumpH - 26) + ' 312 190 Z"/></clipPath>' +
-      '<image id="tkBellyFood" class="tk-belly-food" href="' + photoData + '" x="84" y="100" width="224" height="120" preserveAspectRatio="xMidYMid slice" clip-path="url(#bellyClip)"/>'
-    : '';
-  return '<svg viewBox="0 0 393 200" xmlns="http://www.w3.org/2000/svg">' + belly +
-    '<path d="M6 ' + bodyY + ' Q196 ' + (bodyY - bumpH) + ' 360 ' + (bodyY - 10) + '" fill="none" stroke="#F0C878" stroke-width="44" stroke-linecap="round"/>' +
-    '<path d="M6 ' + bodyY + ' Q196 ' + (bodyY - bumpH) + ' 360 ' + (bodyY - 10) + '" fill="none" stroke="#1f1f1f" stroke-width="2.5" stroke-dasharray="0" opacity="0"/>' +
-    '<circle cx="352" cy="' + (bodyY - 34) + '" r="24" fill="#F0C878" stroke="#1f1f1f" stroke-width="2.5"/>' +
-    '<circle cx="348" cy="' + (bodyY - 40) + '" r="2.8" fill="#1f1f1f"/>' +
-    '<path d="M366 ' + (bodyY - 36) + ' q10 -2 8 -10" stroke="#FF6B6B" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
-    '</svg>';
-}
+document.getElementById("resultBack").addEventListener("click", () => showView("Home"));
 
 /* ================= 投喂落地 ================= */
 
@@ -430,14 +528,13 @@ document.getElementById("camShutter").addEventListener("click", function () {
   if (camLive) {
     const shot = captureFrame();
     if (shot) {
-      stopCamera();
       photoData = shot;
       runMockRecognize("full"); // 照片与取景同位同尺寸
     }
   } else {
-    // 无实时取景（桌面预览演示）：用演示图走完整链路
-    photoData = "design/assets/cam-demo-food.png";
-    runMockRecognize("card"); // 与演示背景同位同尺寸
+    // 没有实时画面时使用系统拍摄，不能把演示拼接图当作照片。
+    takeInput.value = "";
+    takeInput.click();
   }
 });
 
@@ -472,13 +569,30 @@ document.getElementById("cfRetake").addEventListener("click", function () {
 });
 
 document.getElementById("cfConfirm").addEventListener("click", function () {
+  const input = document.getElementById("cfFoodName");
+  const name = input.value.trim();
+  if (!name) {
+    toast("请填写物体名称");
+    input.focus();
+    return;
+  }
+  pendingFood.name = name;
+  input.blur();
   showPledge();
 });
 
-// 投食状页：反悔了（回相机）/ 马上喂（→ 品鉴加载动画 → 品鉴结果）
+document.getElementById("cfFoodName").addEventListener("keydown", function (event) {
+  if (event.key === "Enter" && !event.isComposing) {
+    event.preventDefault();
+    event.currentTarget.blur();
+  }
+});
+
+// 投食状页：反悔了（回首页）/ 马上喂（→ 品鉴加载动画 → 品鉴结果）
 document.getElementById("plRegret").addEventListener("click", function () {
-  showView("Camera");
-  startCamera();
+  cancelProcessing();
+  stopCamera();
+  showView("Home");
 });
 
 document.getElementById("plFeed").addEventListener("click", function () {
@@ -517,5 +631,7 @@ document.getElementById("btnPersona").addEventListener("click", function () {
 
 renderAll();
 showView("Home");
-rotateBubble();
+// 首屏气泡按设计稿文案，之后进入轮换
+showBubble("太饿了，你不吃的可以给我喂点");
+setTimeout(rotateBubble, 8000);
 console.log("[BoaBite] ready, count =", state.count);
